@@ -1,0 +1,1 @@
+This part of the course introduces the foundational concepts of web development, focusing on how browsers and servers communicate using HTTP, the basics of traditional web applications, AJAX, and the emergence of Single Page Applications (SPAs).
