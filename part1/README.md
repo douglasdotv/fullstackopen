@@ -1,0 +1,1 @@
+This part of the course provides an introduction to the React library, a powerful tool for building dynamic, browser-based applications. It also delves into essential JavaScript features that are fundamental for understanding React.
