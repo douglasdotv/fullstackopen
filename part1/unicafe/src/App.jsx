@@ -10,6 +10,10 @@ const App = () => {
     setNeutralCount((prevNeutral) => prevNeutral + 1)
   const handleBadClick = () => setBadCount((prevBad) => prevBad + 1)
 
+  const total = goodCount + neutralCount + badCount
+  const averageScore = total ? (goodCount - badCount) / total : 0
+  const positiveFeedbackPercentage = total ? (goodCount / total) * 100 : 0
+
   return (
     <div>
       <h2>Feedback</h2>
@@ -21,6 +25,9 @@ const App = () => {
       <p>Good: {goodCount}</p>
       <p>Neutral: {neutralCount}</p>
       <p>Bad: {badCount}</p>
+      <p>All: {total}</p>
+      <p>Average score: {averageScore}</p>
+      <p>Positive feedback percentage: {positiveFeedbackPercentage}%</p>
     </div>
   )
 }
