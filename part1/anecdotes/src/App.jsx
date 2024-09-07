@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import Button from './components/Button'
+import AnecdoteOfTheDay from './components/AnecdoteOfTheDay'
+import MostVotedAnecdote from './components/MostVotedAnecdote'
 
 const App = () => {
   const anecdotes = [
@@ -27,12 +28,25 @@ const App = () => {
     setSelected(randomIndex)
   }
 
+  const anecdoteOfTheDay = {
+    text: anecdotes[selected],
+    votes: votes[selected],
+  }
+
+  const mostVotedAnecdoteIndex = votes.indexOf(Math.max(...votes))
+  const mostVotedAnecdote = {
+    text: anecdotes[mostVotedAnecdoteIndex],
+    votes: votes[mostVotedAnecdoteIndex],
+  }
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>Has {votes[selected]} votes</p>
-      <Button text="Vote" onClick={handleVote} />
-      <Button text="Next anecdote" onClick={handleNextAnecdote} />
+      <AnecdoteOfTheDay
+        anecdote={anecdoteOfTheDay}
+        onVote={handleVote}
+        onNextAnecdote={handleNextAnecdote}
+      />
+      <MostVotedAnecdote anecdote={mostVotedAnecdote} />
     </div>
   )
 }
