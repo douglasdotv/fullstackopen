@@ -1,0 +1,1 @@
+This part of the course explores how to render collections in React, introduces data submission through forms and covers fetching and handling data stored on backend servers. Additionally, simple ways for adding CSS styles to React applications are discussed.
