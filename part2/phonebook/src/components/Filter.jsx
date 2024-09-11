@@ -1,12 +1,13 @@
 import FormInput from './FormInput'
 
-const Filter = ({ searchQuery, onSearchQueryChange }) => {
+const Filter = ({ searchQuery, onInputChange }) => {
   return (
     <div>
       <FormInput
+        name="searchQuery"
         label="Filter by name"
         value={searchQuery}
-        onChange={onSearchQueryChange}
+        onChange={onInputChange}
       />
     </div>
   )

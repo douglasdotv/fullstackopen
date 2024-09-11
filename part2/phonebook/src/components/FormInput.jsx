@@ -1,8 +1,8 @@
-const FormInput = ({ label, value, onChange }) => (
+const FormInput = ({ name, label, value, onChange }) => (
   <div>
     <label>
       {label + ': '}
-      <input value={value} onChange={onChange} />
+      <input name={name} value={value} onChange={onChange} />
     </label>
   </div>
 )

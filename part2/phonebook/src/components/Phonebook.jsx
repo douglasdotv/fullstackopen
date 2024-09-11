@@ -19,14 +19,21 @@ const Phonebook = () => {
     return person.name.toLowerCase().includes(searchQuery.toLowerCase())
   })
 
-  const handleNameChange = (event) => {
-    setNewName(event.target.value)
-  }
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value)
-  }
-  const handleSearchQueryChange = (event) => {
-    setSearchQuery(event.target.value)
+  const handleInputChange = (event) => {
+    const { name, value } = event.target
+    switch (name) {
+      case 'name':
+        setNewName(value)
+        break
+      case 'number':
+        setNewNumber(value)
+        break
+      case 'searchQuery':
+        setSearchQuery(value)
+        break
+      default:
+        console.warn(`No handler for input name: ${name}`)
+    }
   }
 
   const addPerson = (event) => {
@@ -86,15 +93,11 @@ const Phonebook = () => {
   return (
     <div>
       <Title text="Phonebook" />
-      <Filter
-        searchQuery={searchQuery}
-        onSearchQueryChange={handleSearchQueryChange}
-      />
+      <Filter searchQuery={searchQuery} onInputChange={handleInputChange} />
       <PersonForm
         newName={newName}
         newNumber={newNumber}
-        onNameChange={handleNameChange}
-        onNumberChange={handleNumberChange}
+        onInputChange={handleInputChange}
         onSubmit={addPerson}
       />
       <Persons persons={filteredPersons} />

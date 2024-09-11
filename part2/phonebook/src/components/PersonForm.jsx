@@ -1,19 +1,23 @@
 import FormInput from './FormInput'
 import Title from './Title'
 
-const PersonForm = ({
-  newName,
-  newNumber,
-  onNameChange,
-  onNumberChange,
-  onSubmit,
-}) => {
+const PersonForm = ({ newName, newNumber, onInputChange, onSubmit }) => {
   return (
     <>
       <Title text="Add New Person" />
       <form onSubmit={onSubmit}>
-        <FormInput label="Name" value={newName} onChange={onNameChange} />
-        <FormInput label="Number" value={newNumber} onChange={onNumberChange} />
+        <FormInput
+          name="name"
+          label="Name"
+          value={newName}
+          onChange={onInputChange}
+        />
+        <FormInput
+          name="number"
+          label="Number"
+          value={newNumber}
+          onChange={onInputChange}
+        />
         <div>
           <button type="submit">Add</button>
         </div>
