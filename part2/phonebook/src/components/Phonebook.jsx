@@ -15,6 +15,10 @@ const Phonebook = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
 
+  const filteredPersons = persons.filter((person) => {
+    return person.name.toLowerCase().includes(searchQuery.toLowerCase())
+  })
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -25,9 +29,23 @@ const Phonebook = () => {
     setSearchQuery(event.target.value)
   }
 
-  const filteredPersons = persons.filter((person) => {
-    return person.name.toLowerCase().includes(searchQuery.toLowerCase())
-  })
+  const addPerson = (event) => {
+    event.preventDefault()
+
+    if (!validatePerson(newName, newNumber)) {
+      return
+    }
+
+    const newPerson = {
+      name: newName,
+      number: newNumber,
+      id: persons.length + 1,
+    }
+
+    setPersons(persons.concat(newPerson))
+    setNewName('')
+    setNewNumber('')
+  }
 
   const validateName = (name) => {
     const trimmedName = name.trim()
@@ -63,24 +81,6 @@ const Phonebook = () => {
 
   const validatePerson = (name, number) => {
     return validateName(name) && validateNumber(number)
-  }
-
-  const addPerson = (event) => {
-    event.preventDefault()
-
-    if (!validatePerson(newName, newNumber)) {
-      return
-    }
-
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1,
-    }
-    setPersons(persons.concat(newPerson))
-
-    setNewName('')
-    setNewNumber('')
   }
 
   return (
