@@ -29,29 +29,40 @@ const Phonebook = () => {
     return person.name.toLowerCase().includes(searchQuery.toLowerCase())
   })
 
-  const isDuplicateName = (name) => {
-    return persons.some(
-      (person) => person.name.toLowerCase() === name.trim().toLowerCase()
-    )
-  }
+  const validateName = (name) => {
+    const trimmedName = name.trim()
 
-  const isValidPhoneNumber = (number) => {
-    const pattern = /^[0-9-\s]+$/
-    return pattern.test(number.trim())
-  }
-
-  const validatePerson = (name, number) => {
-    if (isDuplicateName(name)) {
-      alert(`Error: ${name} is already added to the phonebook`)
+    if (trimmedName === '') {
+      alert('Error: name cannot be empty')
       return false
     }
 
-    if (!isValidPhoneNumber(number)) {
-      alert(`Error: ${number} is not a valid phone number`)
+    const isDuplicateName = persons.some(
+      (person) => person.name.toLowerCase() === name.trim().toLowerCase()
+    )
+
+    if (isDuplicateName) {
+      alert(`Error: ${trimmedName} is already added to the phonebook`)
       return false
     }
 
     return true
+  }
+
+  const validateNumber = (number) => {
+    const trimmedNumber = number.trim()
+    const phoneNumberPattern = /^[0-9-\s]+$/
+
+    if (!phoneNumberPattern.test(trimmedNumber)) {
+      alert(`Error: ${trimmedNumber} is not a valid phone number`)
+      return false
+    }
+
+    return true
+  }
+
+  const validatePerson = (name, number) => {
+    return validateName(name) && validateNumber(number)
   }
 
   const addPerson = (event) => {
