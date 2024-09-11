@@ -10,6 +10,16 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
+
+    const isDuplicateName = persons.some(
+      (person) => person.name.toLowerCase() === newName.trim().toLowerCase()
+    )
+
+    if (isDuplicateName) {
+      alert(`Error: ${newName} is already added to the phonebook`)
+      return
+    }
+
     const newPerson = {
       name: newName,
       id: persons.length + 1,
