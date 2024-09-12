@@ -57,6 +57,18 @@ const Phonebook = () => {
     })
   }
 
+  const removePerson = (id) => {
+    const personToRemove = persons.find((person) => person.id === id)
+    const isConfirmed = window.confirm(
+      `Do you really want to remove ${personToRemove.name}?`
+    )
+    if (isConfirmed) {
+      personService.remove(id).then(() => {
+        setPersons(persons.filter((person) => person.id !== id))
+      })
+    }
+  }
+
   const validateName = (name) => {
     const trimmedName = name.trim()
 
@@ -103,7 +115,7 @@ const Phonebook = () => {
         onInputChange={handleInputChange}
         onSubmit={addPerson}
       />
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} onRemove={removePerson} />
     </div>
   )
 }
