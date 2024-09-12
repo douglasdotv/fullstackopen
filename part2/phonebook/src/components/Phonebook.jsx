@@ -45,16 +45,45 @@ const Phonebook = () => {
       return
     }
 
+    const existingPerson = persons.find(
+      (person) => person.name.toLowerCase() === newName.trim().toLowerCase()
+    )
+
     const newPerson = {
       name: newName,
       number: newNumber,
     }
 
-    personService.create(newPerson).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson))
-      setNewName('')
-      setNewNumber('')
-    })
+    if (existingPerson) {
+      const isConfirmed = window.confirm(
+        `${existingPerson.name} is already added to the phonebook. Do you want to replace the old number with the new one?`
+      )
+      if (isConfirmed) {
+        personService
+          .update(existingPerson.id, newPerson)
+          .then((updatedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== existingPerson.id ? person : updatedPerson
+              )
+            )
+            setNewName('')
+            setNewNumber('')
+          })
+          .catch((error) => {
+            alert(`Error updating ${existingPerson.name}. ${error}`)
+            setPersons(
+              persons.filter((person) => person.id !== existingPerson.id)
+            )
+          })
+      }
+    } else {
+      personService.create(newPerson).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
+    }
   }
 
   const removePerson = (id) => {
@@ -74,15 +103,6 @@ const Phonebook = () => {
 
     if (trimmedName === '') {
       alert('Error: name cannot be empty')
-      return false
-    }
-
-    const isDuplicateName = persons.some(
-      (person) => person.name.toLowerCase() === name.trim().toLowerCase()
-    )
-
-    if (isDuplicateName) {
-      alert(`Error: ${trimmedName} is already added to the phonebook`)
       return false
     }
 
