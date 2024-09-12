@@ -1,8 +1,8 @@
-const PersonItem = ({ person }) => {
-  const { name, number } = person
+const PersonItem = ({ person, onRemove }) => {
+  const { name, number, id } = person
   return (
     <li>
-      {name} {number}
+      {name} {number} <button onClick={() => onRemove(id)}>Remove</button>
     </li>
   )
 }
