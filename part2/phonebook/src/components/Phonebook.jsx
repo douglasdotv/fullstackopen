@@ -15,14 +15,12 @@ const Phonebook = () => {
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
-    personService.getAll().then((initialPersons) => {
-      setPersons(initialPersons)
-    })
+    personService.getAll().then(setPersons)
   }, [])
 
-  const filteredPersons = persons.filter((person) => {
-    return person.name.toLowerCase().includes(searchQuery.toLowerCase())
-  })
+  const filteredPersons = persons.filter((p) =>
+    p.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const handleInputChange = (event) => {
     const { name, value } = event.target
@@ -41,6 +39,34 @@ const Phonebook = () => {
     }
   }
 
+  const addOrUpdatePerson = (existingPerson, newPerson) => {
+    if (existingPerson) {
+      personService
+        .update(existingPerson.id, newPerson)
+        .then((updatedPerson) => {
+          setPersons(
+            persons.map((p) => (p.id !== existingPerson.id ? p : updatedPerson))
+          )
+          handleSubmitSuccess(
+            `${newPerson.name}'s number was successfully updated.`
+          )
+        })
+        .catch((error) => {
+          notify(`Failed to update ${existingPerson.name}. ${error}`, 'error')
+        })
+    } else {
+      personService
+        .create(newPerson)
+        .then((returnedPerson) => {
+          setPersons([...persons, returnedPerson])
+          handleSubmitSuccess(`${newPerson.name} was successfully added.`)
+        })
+        .catch((error) => {
+          notify(`Failed to add ${newPerson.name}. ${error}`, 'error')
+        })
+    }
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
     const errors = validatePerson(newName, newNumber)
@@ -51,65 +77,22 @@ const Phonebook = () => {
       )
       return
     }
-
+    const newPerson = { name: newName, number: newNumber }
     const existingPerson = persons.find(
-      (person) => person.name.toLowerCase() === newName.trim().toLowerCase()
+      (p) => p.name.toLowerCase() === newName.trim().toLowerCase()
     )
-
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-    }
-
-    if (existingPerson) {
-      const isConfirmed = window.confirm(
-        `${existingPerson.name} is already added to the phonebook. Do you want to replace the old number with the new one?`
-      )
-      if (isConfirmed) {
-        personService
-          .update(existingPerson.id, newPerson)
-          .then((updatedPerson) => {
-            setPersons(
-              persons.map((person) =>
-                person.id !== existingPerson.id ? person : updatedPerson
-              )
-            )
-            setNewName('')
-            setNewNumber('')
-            notify(
-              `${newPerson.name}'s number was successfully updated.`,
-              'success'
-            )
-          })
-          .catch((error) => {
-            notify(`Failed to update ${existingPerson.name}. ${error}`, 'error')
-          })
-      }
-    } else {
-      personService
-        .create(newPerson)
-        .then((returnedPerson) => {
-          setPersons(persons.concat(returnedPerson))
-          setNewName('')
-          setNewNumber('')
-          notify(`${newPerson.name} was successfully added.`, 'success')
-        })
-        .catch((error) => {
-          notify(`Failed to add ${newPerson.name}. ${error}`, 'error')
-        })
-    }
+    addOrUpdatePerson(existingPerson, newPerson)
   }
 
   const removePerson = (id) => {
-    const personToRemove = persons.find((person) => person.id === id)
-    const isConfirmed = window.confirm(
-      `Do you really want to remove ${personToRemove.name}?`
-    )
-    if (isConfirmed) {
+    const personToRemove = persons.find((p) => p.id === id)
+    if (
+      window.confirm(`Do you really want to remove ${personToRemove.name}?`)
+    ) {
       personService
         .remove(id)
         .then(() => {
-          setPersons(persons.filter((person) => person.id !== id))
+          setPersons(persons.filter((p) => p.id !== id))
           notify(`${personToRemove.name} was successfully removed.`, 'success')
         })
         .catch((error) => {
@@ -120,9 +103,13 @@ const Phonebook = () => {
 
   const notify = (message, type) => {
     setNotification({ message, type })
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
+    setTimeout(() => setNotification(null), 5000)
+  }
+
+  const handleSubmitSuccess = (message) => {
+    setNewName('')
+    setNewNumber('')
+    notify(message, 'success')
   }
 
   return (
