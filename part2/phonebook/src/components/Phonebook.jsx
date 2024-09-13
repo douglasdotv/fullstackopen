@@ -4,12 +4,14 @@ import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
 import Title from './Title'
+import Notification from './Notification'
 
 const Phonebook = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -69,20 +71,27 @@ const Phonebook = () => {
             )
             setNewName('')
             setNewNumber('')
+            notify(
+              `${newPerson.name}'s number was successfully updated.`,
+              'success'
+            )
           })
           .catch((error) => {
-            alert(`Error updating ${existingPerson.name}. ${error}`)
-            setPersons(
-              persons.filter((person) => person.id !== existingPerson.id)
-            )
+            notify(`Failed to update ${existingPerson.name}. ${error}`, 'error')
           })
       }
     } else {
-      personService.create(newPerson).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-      })
+      personService
+        .create(newPerson)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          notify(`${newPerson.name} was successfully added.`, 'success')
+        })
+        .catch((error) => {
+          notify(`Failed to add ${newPerson.name}. ${error}`, 'error')
+        })
     }
   }
 
@@ -92,9 +101,15 @@ const Phonebook = () => {
       `Do you really want to remove ${personToRemove.name}?`
     )
     if (isConfirmed) {
-      personService.remove(id).then(() => {
-        setPersons(persons.filter((person) => person.id !== id))
-      })
+      personService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id))
+          notify(`${personToRemove.name} was successfully removed.`, 'success')
+        })
+        .catch((error) => {
+          notify(`Failed to remove ${personToRemove.name}. ${error}`, 'error')
+        })
     }
   }
 
@@ -125,8 +140,16 @@ const Phonebook = () => {
     return validateName(name) && validateNumber(number)
   }
 
+  const notify = (message, type) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
+
   return (
     <div>
+      <Notification notification={notification} />
       <Title text="Phonebook" />
       <Filter searchQuery={searchQuery} onInputChange={handleInputChange} />
       <PersonForm
