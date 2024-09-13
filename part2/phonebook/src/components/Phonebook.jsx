@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import personService from '../services/persons'
+import { validatePerson } from '../utils/validation'
 import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
@@ -42,8 +43,12 @@ const Phonebook = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-
-    if (!validatePerson(newName, newNumber)) {
+    const errors = validatePerson(newName, newNumber)
+    if (errors) {
+      notify(
+        `Error: ${errors.nameError || ''} ${errors.numberError || ''}`,
+        'error'
+      )
       return
     }
 
@@ -111,33 +116,6 @@ const Phonebook = () => {
           notify(`Failed to remove ${personToRemove.name}. ${error}`, 'error')
         })
     }
-  }
-
-  const validateName = (name) => {
-    const trimmedName = name.trim()
-
-    if (trimmedName === '') {
-      alert('Error: name cannot be empty')
-      return false
-    }
-
-    return true
-  }
-
-  const validateNumber = (number) => {
-    const trimmedNumber = number.trim()
-    const phoneNumberPattern = /^[0-9-\s]+$/
-
-    if (!phoneNumberPattern.test(trimmedNumber)) {
-      alert(`Error: ${trimmedNumber} is not a valid phone number`)
-      return false
-    }
-
-    return true
-  }
-
-  const validatePerson = (name, number) => {
-    return validateName(name) && validateNumber(number)
   }
 
   const notify = (message, type) => {
