@@ -1,3 +1,4 @@
+import Button from './Button'
 import FormInput from './FormInput'
 import Title from './Title'
 
@@ -19,7 +20,7 @@ const PersonForm = ({ newName, newNumber, onInputChange, onSubmit }) => {
           onChange={onInputChange}
         />
         <div>
-          <button type="submit">Add</button>
+          <Button type="submit">Add</Button>
         </div>
       </form>
     </>
