@@ -1,7 +1,8 @@
 import CountryLanguages from './CountryLanguages'
 import Image from '../common/Image'
+import Button from '../common/Button'
 
-const CountryData = ({ country }) => {
+const CountryData = ({ country, onBack }) => {
   const name = country.name.common
   const capital = country.capital
   const area = country.area
@@ -19,6 +20,9 @@ const CountryData = ({ country }) => {
       <p>Languages: </p>
       <CountryLanguages languages={languages} />
       <Image src={flag.src} alt={flag.alt} border />
+      <div>
+        {onBack && <Button onClick={onBack}>Back to country list</Button>}
+      </div>
     </div>
   )
 }

@@ -1,8 +1,24 @@
+import { useState, useEffect } from 'react'
 import CountryData from './CountryData'
 import CountryList from './CountryList'
 import Notification from '../common/Notification'
 
 const CountrySearchResult = ({ countries, query }) => {
+  const [selectedCountry, setSelectedCountry] = useState(null)
+
+  useEffect(() => {
+    setSelectedCountry(null)
+  }, [query])
+
+  if (selectedCountry) {
+    return (
+      <CountryData
+        country={selectedCountry}
+        onBack={() => setSelectedCountry(null)}
+      />
+    )
+  }
+
   if (query === '') {
     return <Notification message="Please enter a search term" />
   }
@@ -16,7 +32,9 @@ const CountrySearchResult = ({ countries, query }) => {
   }
 
   if (countries.length > 1 && countries.length <= 10) {
-    return <CountryList countries={countries} />
+    return (
+      <CountryList countries={countries} onSelectCountry={setSelectedCountry} />
+    )
   }
 
   if (countries.length === 1) {
