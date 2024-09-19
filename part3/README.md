@@ -1,0 +1,1 @@
+This part of the course focuses on building a backend using Node.js and Express, implementing a REST API and storing data in MongoDB. It also covers deploying the application to the internet and validation with ESLint.
