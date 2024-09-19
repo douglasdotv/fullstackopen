@@ -1,6 +1,11 @@
 const express = require('express')
 
 const app = express()
+app.use(express.json())
+
+const generateId = () => {
+  return Math.floor(Math.random() * 1000000000).toString()
+}
 
 let persons = [
   {
@@ -40,6 +45,12 @@ app.get('/api/persons/:id', (req, res) => {
   const id = req.params.id
   const person = persons.find((p) => p.id === id)
   person ? res.json(person) : res.status(404).end()
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = req.params.id
+  persons = persons.filter((p) => p.id !== id)
+  res.status(204).end()
 })
 
 const PORT = 3001
