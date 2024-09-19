@@ -3,6 +3,16 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
+const validatePerson = (body) => {
+  if (!body.name || !body.number) {
+    return { error: 'Name or number missing' }
+  }
+  if (persons.find((person) => person.name === body.name)) {
+    return { error: 'Name must be unique' }
+  }
+  return null
+}
+
 const generateId = () => {
   return Math.floor(Math.random() * 1000000000).toString()
 }
@@ -51,6 +61,26 @@ app.delete('/api/persons/:id', (req, res) => {
   const id = req.params.id
   persons = persons.filter((p) => p.id !== id)
   res.status(204).end()
+})
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+
+  const validationError = validatePerson(body)
+
+  if (validationError) {
+    return res.status(400).json(validationError)
+  }
+
+  const newPerson = {
+    id: generateId(),
+    name: body.name,
+    number: body.number,
+  }
+
+  persons = persons.concat(newPerson)
+
+  res.json(newPerson)
 })
 
 const PORT = 3001
