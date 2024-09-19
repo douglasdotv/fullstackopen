@@ -28,12 +28,18 @@ let persons = [
 app.get('/info', (_req, res) => {
   const date = new Date()
   const totalPhonebookEntries = persons.length
-  const info = `Phonebook has info for ${totalPhonebookEntries} people. ${date}`
+  const info = `<p>Phonebook has info for ${totalPhonebookEntries} people</p><p>${date}</p>`
   res.send(info)
 })
 
 app.get('/api/persons', (_req, res) => {
   res.json(persons)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+  const id = req.params.id
+  const person = persons.find((p) => p.id === id)
+  person ? res.json(person) : res.status(404).end()
 })
 
 const PORT = 3001
