@@ -1,12 +1,9 @@
 const express = require('express')
-const cors = require('cors')
 const morgan = require('morgan')
 
 const app = express()
 
 app.use(express.json())
-
-app.use(cors())
 
 morgan.token('body', (req, _) =>
   req.method === 'POST' ? JSON.stringify(req.body) : ''
@@ -14,6 +11,8 @@ morgan.token('body', (req, _) =>
 const customFormat =
   ':method :url :status :res[content-length] - :response-time ms :body'
 app.use(morgan(customFormat))
+
+app.use(express.static('dist'))
 
 const validatePerson = (body) => {
   if (!body.name || !body.number) {
