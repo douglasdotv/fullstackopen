@@ -16,20 +16,6 @@ app.use(morgan(customFormat))
 
 app.use(express.static('dist'))
 
-const validatePerson = (body) => {
-  if (!body.name || !body.number) {
-    return { error: 'Name or number missing' }
-  }
-  if (persons.find((person) => person.name === body.name)) {
-    return { error: 'Name must be unique' }
-  }
-  return null
-}
-
-const generateId = () => {
-  return Math.floor(Math.random() * 1000000000).toString()
-}
-
 app.get('/info', (_req, res) => {
   const date = new Date()
   const totalPhonebookEntries = persons.length
@@ -58,21 +44,24 @@ app.delete('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
-  const validationError = validatePerson(body)
-
-  if (validationError) {
-    return res.status(400).json(validationError)
-  }
-
-  const newPerson = {
-    id: generateId(),
+  const person = new Person({
     name: body.name,
     number: body.number,
-  }
+  })
 
-  persons = persons.concat(newPerson)
-
-  res.json(newPerson)
+  person
+    .save()
+    .then((savedPerson) => {
+      res.json(savedPerson)
+    })
+    .catch((error) => {
+      if (error.name === 'ValidationError') {
+        res.status(400).json({ error: error.message })
+      } else {
+        console.error('Error:', error.message)
+        res.status(500).json({ error: 'Internal server error' })
+      }
+    })
 })
 
 const PORT = process.env.PORT
