@@ -7,7 +7,7 @@ const app = express()
 
 app.use(express.json())
 
-morgan.token('body', (req, _) =>
+morgan.token('body', (req) =>
   req.method === 'POST' ? JSON.stringify(req.body) : ''
 )
 const customFormat =
