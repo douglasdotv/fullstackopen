@@ -23,10 +23,12 @@ app.get('/info', (_req, res) => {
   res.send(info)
 })
 
-app.get('/api/persons', (_req, res) => {
-  Person.find({}).then((persons) => {
-    res.json(persons)
-  })
+app.get('/api/persons', (_req, res, next) => {
+  Person.find({})
+    .then((persons) => {
+      res.json(persons)
+    })
+    .catch((error) => next(error))
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -35,19 +37,16 @@ app.get('/api/persons/:id', (req, res) => {
   person ? res.json(person) : res.status(404).end()
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   Person.findByIdAndDelete(id)
     .then(() => {
       res.status(204).end()
     })
-    .catch((error) => {
-      console.log(error)
-      res.status(400).send({ error: 'Malformed id' })
-    })
+    .catch((error) => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
   const person = new Person({
@@ -57,18 +56,25 @@ app.post('/api/persons', (req, res) => {
 
   person
     .save()
-    .then((savedPerson) => {
-      res.json(savedPerson)
-    })
-    .catch((error) => {
-      if (error.name === 'ValidationError') {
-        res.status(400).json({ error: error.message })
-      } else {
-        console.error('Error:', error.message)
-        res.status(500).json({ error: 'Internal server error' })
-      }
-    })
+    .then((savedPerson) => res.json(savedPerson))
+    .catch((error) => next(error))
 })
+
+const unknownEndpoint = (_req, res) => {
+  res.status(404).send({ error: 'Unknown endpoint' })
+}
+app.use(unknownEndpoint)
+
+const errorHandler = (error, _req, res, next) => {
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'Malformed id' })
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).json({ error: error.message })
+  }
+  res.status(500).json({ error: 'Internal server error' })
+  next(error)
+}
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
