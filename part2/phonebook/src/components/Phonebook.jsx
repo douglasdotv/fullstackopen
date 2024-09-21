@@ -45,25 +45,23 @@ const Phonebook = () => {
         .update(existingPerson.id, newPerson)
         .then((updatedPerson) => {
           setPersons(
-            persons.map((p) => (p.id !== existingPerson.id ? p : updatedPerson))
+            persons.map((person) =>
+              person.id !== existingPerson.id ? person : updatedPerson
+            )
           )
           handleSubmitSuccess(
             `${newPerson.name}'s number was successfully updated.`
           )
         })
-        .catch((error) => {
-          notify(`Failed to update ${existingPerson.name}. ${error}`, 'error')
-        })
+        .catch((error) => handleError(error, existingPerson))
     } else {
       personService
         .create(newPerson)
         .then((returnedPerson) => {
-          setPersons([...persons, returnedPerson])
+          setPersons(persons.concat(returnedPerson))
           handleSubmitSuccess(`${newPerson.name} was successfully added.`)
         })
-        .catch((error) => {
-          notify(`Failed to add ${newPerson.name}. ${error}`, 'error')
-        })
+        .catch(handleError)
     }
   }
 
@@ -95,13 +93,13 @@ const Phonebook = () => {
           setPersons(persons.filter((p) => p.id !== id))
           notify(`${personToRemove.name} was successfully removed.`, 'success')
         })
-        .catch((error) => {
+        .catch((error) =>
           notify(`Failed to remove ${personToRemove.name}. ${error}`, 'error')
-        })
+        )
     }
   }
 
-  const notify = (message, type) => {
+  const notify = (message, type = 'success') => {
     setNotification({ message, type })
     setTimeout(() => setNotification(null), 5000)
   }
@@ -110,6 +108,24 @@ const Phonebook = () => {
     setNewName('')
     setNewNumber('')
     notify(message, 'success')
+  }
+
+  const handleError = (error, existingPerson = null) => {
+    if (error.response) {
+      if (error.response.status === 404 && existingPerson) {
+        setPersons((prevPersons) =>
+          prevPersons.filter((person) => person.id !== existingPerson.id)
+        )
+        notify(
+          `Error: ${existingPerson.name} was not found on the server. It may have already been removed.`,
+          'error'
+        )
+      } else if (error.response.data && error.response.data.error) {
+        notify(`Error: ${error.response.data.error}`, 'error')
+      } else {
+        notify('An unexpected error occurred. Please try again.', 'error')
+      }
+    }
   }
 
   return (
