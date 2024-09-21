@@ -16,11 +16,17 @@ app.use(morgan(customFormat))
 
 app.use(express.static('dist'))
 
-app.get('/info', (_req, res) => {
-  const date = new Date()
-  const totalPhonebookEntries = persons.length
-  const info = `<p>Phonebook has info for ${totalPhonebookEntries} people</p><p>${date}</p>`
-  res.send(info)
+app.get('/info', (_req, res, next) => {
+  Person.countDocuments({})
+    .then((count) => {
+      const date = new Date()
+      const info = `
+        <p>Phonebook has info for ${count} people</p>
+        <p>${date}</p>
+      `
+      res.send(info)
+    })
+    .catch((error) => next(error))
 })
 
 app.get('/api/persons', (_req, res, next) => {
@@ -31,10 +37,17 @@ app.get('/api/persons', (_req, res, next) => {
     .catch((error) => next(error))
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
-  const person = persons.find((p) => p.id === id)
-  person ? res.json(person) : res.status(404).end()
+  Person.findById(id)
+    .then((person) => {
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch((error) => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
