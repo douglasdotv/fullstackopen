@@ -45,6 +45,29 @@ describe('Tests for /api/blogs', () => {
     }
   })
 
+  test('Should successfully create a valid blog post and return it with status code 201', async () => {
+    const newBlog = {
+      title: 'Test Blog',
+      author: 'Test Author',
+      url: 'https://test.com',
+      likes: 0,
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    assert.strictEqual(response.body.title, 'Test Blog')
+    assert.strictEqual(response.body.author, 'Test Author')
+    assert.strictEqual(response.body.url, 'https://test.com')
+    assert.strictEqual(response.body.likes, 0)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
