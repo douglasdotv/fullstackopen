@@ -68,6 +68,20 @@ describe('Tests for /api/blogs', () => {
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
   })
 
+  test('Should default "likes" to 0 if property is missing when creating a blog post', async () => {
+    const newBlog = {
+      title: 'Test Blog',
+      author: 'Test Author',
+      url: 'https://test.com',
+    }
+
+    const response = await api.post('/api/blogs').send(newBlog)
+    assert.strictEqual(response.body.likes, 0)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
