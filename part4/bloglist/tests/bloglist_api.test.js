@@ -124,6 +124,39 @@ describe('Tests for /api/blogs', () => {
     })
   })
 
+  describe('Deleting blog posts', () => {
+    test('Should successfully delete an existing blog post and return 204', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+
+      const titles = blogsAtEnd.map((b) => b.title)
+      assert.ok(!titles.includes(blogToDelete.title))
+    })
+
+    test('Should return 404 when deleting a non-existing blog post', async () => {
+      const validNonExistingId = await helper.nonExistingId()
+
+      await api.delete(`/api/blogs/${validNonExistingId}`).expect(404)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+
+    test('Should return 400 when deleting a blog post with invalid ID', async () => {
+      const invalidId = '$123'
+
+      await api.delete(`/api/blogs/${invalidId}`).expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
