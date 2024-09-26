@@ -37,6 +37,14 @@ describe('Tests for /api/blogs', () => {
     assert.notStrictEqual(blog, undefined)
   })
 
+  test('Should have a property named "id" for each blog post in the response', async () => {
+    const response = await api.get('/api/blogs')
+    const blogs = response.body
+    for (const blog of blogs) {
+      assert.ok(blog.id)
+    }
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
