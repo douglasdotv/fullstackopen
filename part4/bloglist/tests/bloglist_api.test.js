@@ -157,6 +157,85 @@ describe('Tests for /api/blogs', () => {
     })
   })
 
+  describe('Updating blog posts', () => {
+    test('Should successfully update an existing blog post and return it with status code 200', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToUpdate = blogsAtStart[0]
+
+      const updatedBlogData = {
+        title: 'Updated Title',
+        author: 'Updated Author',
+        url: 'https://updatedurl.com',
+        likes: blogToUpdate.likes + 10,
+      }
+
+      const response = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(updatedBlogData)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      assert.strictEqual(response.body.title, updatedBlogData.title)
+      assert.strictEqual(response.body.author, updatedBlogData.author)
+      assert.strictEqual(response.body.url, updatedBlogData.url)
+      assert.strictEqual(response.body.likes, updatedBlogData.likes)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      const updatedBlog = blogsAtEnd.find((b) => b.id === blogToUpdate.id)
+
+      assert.strictEqual(updatedBlog.title, updatedBlogData.title)
+      assert.strictEqual(updatedBlog.author, updatedBlogData.author)
+      assert.strictEqual(updatedBlog.url, updatedBlogData.url)
+      assert.strictEqual(updatedBlog.likes, updatedBlogData.likes)
+    })
+
+    test('Should return 404 when updating a non-existing blog post', async () => {
+      const validNonExistingId = await helper.nonExistingId()
+
+      const updatedBlogData = {
+        title: 'Updated Title',
+        author: 'Updated Author',
+        url: 'https://updatedurl.com',
+        likes: 10,
+      }
+
+      await api
+        .put(`/api/blogs/${validNonExistingId}`)
+        .send(updatedBlogData)
+        .expect(404)
+    })
+
+    test('Should return 400 when updating a blog post with invalid ID', async () => {
+      const invalidId = '$123'
+
+      const updatedBlogData = {
+        title: 'Updated Title',
+        author: 'Updated Author',
+        url: 'https://updatedurl.com',
+        likes: 10,
+      }
+
+      await api.put(`/api/blogs/${invalidId}`).send(updatedBlogData).expect(400)
+    })
+
+    test('Should return 400 when updating a blog post with invalid data', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToUpdate = blogsAtStart[0]
+
+      const invalidData = {
+        title: '',
+        author: 'Updated Author',
+        url: 'https://updatedurl.com',
+        likes: -5,
+      }
+
+      await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(invalidData)
+        .expect(400)
+    })
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
