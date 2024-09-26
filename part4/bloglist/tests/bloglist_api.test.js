@@ -82,6 +82,44 @@ describe('Tests for /api/blogs', () => {
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
   })
 
+  test('Should return 400 when creating a blog post without "title", "author" or "url"', async () => {
+    const requiredFields = ['title', 'author', 'url']
+
+    for (const field of requiredFields) {
+      const newBlog = {
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'https://test.com',
+        likes: 0,
+      }
+
+      delete newBlog[field]
+
+      await api.post('/api/blogs').send(newBlog).expect(400)
+    }
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+  })
+
+  test('Should return 400 when "likes" is not a positive integer', async () => {
+    const invalidLikesValues = [-1, 'five', 5.5, null]
+
+    for (const likes of invalidLikesValues) {
+      const newBlog = {
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'https://test.com',
+        likes,
+      }
+
+      await api.post('/api/blogs').send(newBlog).expect(400)
+    }
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
