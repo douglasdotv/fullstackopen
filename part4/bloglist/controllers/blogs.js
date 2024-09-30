@@ -67,6 +67,17 @@ blogsRouter.delete('/:id', async (request, response) => {
     return response.status(404).json({ error: 'Blog post not found' })
   }
 
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'Invalid or missing token' })
+  }
+
+  if (blog.user.toString() !== decodedToken.id.toString()) {
+    return response
+      .status(403)
+      .json({ error: 'Forbidden: you can only delete your own blog posts' })
+  }
+
   await Blog.findByIdAndDelete(id)
   response.status(204).end()
 })
