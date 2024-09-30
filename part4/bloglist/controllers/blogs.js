@@ -1,3 +1,5 @@
+const config = require('../utils/config')
+const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
@@ -27,8 +29,19 @@ blogsRouter.post('/', async (request, response) => {
       .json({ error: 'Total likes must be a positive integer' })
   }
 
-  const user = await User.findOne({})
+  const authorizationHeader = request.get('authorization')
+  const isBearer = authorizationHeader?.toLowerCase().startsWith('bearer ')
+  if (!isBearer) {
+    return response.status(401).json({ error: 'Invalid or missing token' })
+  }
 
+  const token = authorizationHeader.substring(7)
+  const decodedToken = jwt.verify(token, config.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'Invalid or missing token' })
+  }
+
+  const user = await User.findById(decodedToken.id)
   if (!user) {
     return response.status(404).json({ error: 'User not found' })
   }
