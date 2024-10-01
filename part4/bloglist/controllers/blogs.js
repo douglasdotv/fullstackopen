@@ -1,9 +1,6 @@
-const config = require('../utils/config')
-const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
 
 blogsRouter.get('/', async (_request, response) => {
   const blogs = await Blog.find({}).populate('user', {
@@ -16,6 +13,7 @@ blogsRouter.get('/', async (_request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const { title, author, url, likes } = request.body
+  const user = request.user
 
   if (!title || !author || !url) {
     return response
@@ -29,14 +27,8 @@ blogsRouter.post('/', async (request, response) => {
       .json({ error: 'Total likes must be a positive integer' })
   }
 
-  const decodedToken = jwt.verify(request.token, config.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'Invalid or missing token' })
-  }
-
-  const user = await User.findById(decodedToken.id)
   if (!user) {
-    return response.status(404).json({ error: 'User not found' })
+    return response.status(401).json({ error: 'Invalid or missing token' })
   }
 
   const blog = new Blog({
@@ -57,6 +49,7 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   const { id } = request.params
+  const user = request.user
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return response.status(400).json({ error: 'Invalid blog post ID' })
@@ -67,12 +60,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     return response.status(404).json({ error: 'Blog post not found' })
   }
 
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'Invalid or missing token' })
-  }
-
-  if (blog.user.toString() !== decodedToken.id.toString()) {
+  if (!user || blog.user.toString() !== user._id.toString()) {
     return response
       .status(403)
       .json({ error: 'Forbidden: you can only delete your own blog posts' })
