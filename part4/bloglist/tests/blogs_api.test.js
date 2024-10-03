@@ -141,6 +141,24 @@ describe('Tests for /api/blogs', () => {
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
+
+    test('Should return 401 when attempting to create a blog post without an authentication token', async () => {
+      const newBlog = {
+        title: 'Unauthorized Blog',
+        author: 'No Token Author',
+        url: 'https://thereisnotoken.com',
+        likes: 0,
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
   })
 
   describe('Deleting blog posts', () => {
