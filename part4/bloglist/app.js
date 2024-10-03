@@ -11,15 +11,16 @@ const logger = require('./utils/logger')
 
 const app = express()
 
-mongoose.set('strictQuery', false)
-mongoose
-  .connect(config.MONGODB_URI)
-  .then(() => {
+const connectToDatabase = async () => {
+  try {
+    await mongoose.connect(config.MONGODB_URI)
     logger.info('Connected to MongoDB')
-  })
-  .catch((error) => {
+  } catch (error) {
     logger.error('Error connecting to MongoDB:', error.message)
-  })
+  }
+}
+mongoose.set('strictQuery', false)
+connectToDatabase()
 
 app.use(cors())
 app.use(express.json())
