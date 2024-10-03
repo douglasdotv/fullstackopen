@@ -55,7 +55,7 @@ const usersInDb = async () => {
   return users.map((user) => user.toJSON())
 }
 
-const createUserAndGetToken = async () => {
+const createUserAndGetAuthDetails = async () => {
   const user = {
     username: 'testuser',
     name: 'Test User',
@@ -69,7 +69,9 @@ const createUserAndGetToken = async () => {
     password: user.password,
   })
 
-  return response.body.token
+  const loggedInUser = await User.findOne({ username: user.username })
+
+  return { token: response.body.token, user: loggedInUser }
 }
 
 module.exports = {
@@ -78,5 +80,5 @@ module.exports = {
   nonExistingId,
   initialUsers,
   usersInDb,
-  createUserAndGetToken,
+  createUserAndGetAuthDetails,
 }
