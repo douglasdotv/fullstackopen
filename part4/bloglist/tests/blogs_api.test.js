@@ -10,17 +10,25 @@ const User = require('../models/user')
 const api = supertest(app)
 
 let token = null
+let user = null
 
 describe('Tests for /api/blogs', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     await User.deleteMany({})
 
-    token = await helper.createUserAndGetToken()
+    const userAndToken = await helper.createUserAndGetAuthDetails()
+    token = userAndToken.token
+    user = userAndToken.user
 
-    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog))
+    const blogObjects = helper.initialBlogs.map(
+      (blog) => new Blog({ ...blog, user: user._id })
+    )
     const promiseArray = blogObjects.map((blog) => blog.save())
     await Promise.all(promiseArray)
+
+    user.blogs = blogObjects.map((blog) => blog._id)
+    await user.save()
   })
 
   describe('Fetching blog posts', () => {
@@ -166,7 +174,10 @@ describe('Tests for /api/blogs', () => {
       const blogsAtStart = await helper.blogsInDb()
       const blogToDelete = blogsAtStart[0]
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
