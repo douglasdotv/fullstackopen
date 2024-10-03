@@ -5,12 +5,19 @@ const mongoose = require('mongoose')
 const helper = require('./test_helper')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
+
+let token = null
 
 describe('Tests for /api/blogs', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
+
+    token = await helper.createUserAndGetToken()
+
     const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog))
     const promiseArray = blogObjects.map((blog) => blog.save())
     await Promise.all(promiseArray)
@@ -58,6 +65,7 @@ describe('Tests for /api/blogs', () => {
 
       const response = await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -78,7 +86,10 @@ describe('Tests for /api/blogs', () => {
         url: 'https://test.com',
       }
 
-      const response = await api.post('/api/blogs').send(newBlog)
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
       assert.strictEqual(response.body.likes, 0)
 
       const blogsAtEnd = await helper.blogsInDb()
@@ -98,7 +109,11 @@ describe('Tests for /api/blogs', () => {
 
         delete newBlog[field]
 
-        await api.post('/api/blogs').send(newBlog).expect(400)
+        await api
+          .post('/api/blogs')
+          .set('Authorization', `Bearer ${token}`)
+          .send(newBlog)
+          .expect(400)
       }
 
       const blogsAtEnd = await helper.blogsInDb()
@@ -116,7 +131,11 @@ describe('Tests for /api/blogs', () => {
           likes,
         }
 
-        await api.post('/api/blogs').send(newBlog).expect(400)
+        await api
+          .post('/api/blogs')
+          .set('Authorization', `Bearer ${token}`)
+          .send(newBlog)
+          .expect(400)
       }
 
       const blogsAtEnd = await helper.blogsInDb()
