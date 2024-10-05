@@ -47,12 +47,12 @@ const BlogPage = () => {
       window.localStorage.setItem('authenticatedUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
-      setNotification({ message: 'Logged in successfully!', type: 'success' })
+      showNotification('Logged in successfully!', 'success')
       setUsername('')
       setPassword('')
     } catch (error) {
       console.error('Failed to log in', error)
-      setNotification({ message: 'Failed to log in', type: 'error' })
+      showNotification('Failed to log in', 'error')
     }
   }
 
@@ -60,7 +60,7 @@ const BlogPage = () => {
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
     blogService.setToken(null)
-    setNotification({ message: 'Logged out successfully!', type: 'success' })
+    showNotification('Logged out successfully!', 'success')
   }
 
   const handleCreateBlog = async (event) => {
@@ -68,17 +68,24 @@ const BlogPage = () => {
     try {
       const newBlog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(newBlog))
-      setNotification({
-        message: `${newBlog.title} by ${newBlog.author} created!`,
-        type: 'success',
-      })
+      showNotification(
+        `${newBlog.title} by ${newBlog.author} created!`,
+        'success'
+      )
       setTitle('')
       setAuthor('')
       setUrl('')
     } catch (error) {
       console.error('Failed to create blog post', error)
-      setNotification({ message: 'Failed to create blog post', type: 'error' })
+      showNotification('Failed to create blog post', 'error')
     }
+  }
+
+  const showNotification = (message, type, duration = 3000) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification({ message: '', type: '' })
+    }, duration)
   }
 
   return (
