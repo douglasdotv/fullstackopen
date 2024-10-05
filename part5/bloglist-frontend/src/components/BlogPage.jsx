@@ -4,11 +4,13 @@ import loginService from '../services/login'
 import BlogForm from './BlogForm'
 import BlogList from './BlogList'
 import LoginForm from './LoginForm'
+import Notification from './Notification'
 import Button from './Button'
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState({ message: '', type: '' })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [title, setTitle] = useState('')
@@ -27,8 +29,15 @@ const BlogPage = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       if (user) {
-        const blogs = await blogService.getAll()
-        setBlogs(blogs)
+        try {
+          const blogs = await blogService.getAll()
+          setBlogs(blogs)
+        } catch (error) {
+          setNotification({
+            message: 'Server is unreachable. Please try again later.',
+            type: 'error',
+          })
+        }
       }
     }
     fetchBlogs()
@@ -46,10 +55,17 @@ const BlogPage = () => {
       window.localStorage.setItem('authenticatedUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
+      setNotification({ message: 'Logged in successfully!', type: 'success' })
       setUsername('')
       setPassword('')
     } catch (error) {
-      console.error('Failed to log in.', error)
+      const errorMessage =
+        error.response?.data?.error ||
+        'Server is unreachable. Please try again later.'
+      setNotification({
+        message: errorMessage,
+        type: 'error',
+      })
     }
   }
 
@@ -57,6 +73,7 @@ const BlogPage = () => {
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
     blogService.setToken(null)
+    setNotification({ message: 'Logged out successfully!', type: 'success' })
   }
 
   const handleCreateBlog = async (event) => {
@@ -64,16 +81,29 @@ const BlogPage = () => {
     try {
       const newBlog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(newBlog))
+      setNotification({
+        message: `"${newBlog.title}" created!`,
+        type: 'success',
+      })
       setTitle('')
       setAuthor('')
       setUrl('')
     } catch (error) {
-      console.error('Failed to create blog post.', error)
+      const errorMessage =
+        error.response?.data?.error ||
+        'Server is unreachable. Please try again later.'
+      setNotification({
+        message: errorMessage,
+        type: 'error',
+      })
     }
   }
 
   return (
     <div>
+      {notification.message && (
+        <Notification message={notification.message} type={notification.type} />
+      )}
       {user ? (
         <>
           <p>{user.name} logged in!</p>
