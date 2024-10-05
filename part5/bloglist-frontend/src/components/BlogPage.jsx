@@ -11,34 +11,51 @@ const BlogPage = () => {
   const [password, setPassword] = useState('')
 
   useEffect(() => {
-    if (user) {
-      blogService.getAll().then((fetchedBlogs) => {
-        setBlogs(fetchedBlogs)
-      })
+    const userJSON = window.localStorage.getItem('authenticatedUser')
+    if (userJSON) {
+      const user = JSON.parse(userJSON)
+      setUser(user)
+      blogService.setToken(user.token)
     }
+  }, [])
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      if (user) {
+        const blogs = await blogService.getAll()
+        setBlogs(blogs)
+      }
+    }
+    fetchBlogs()
   }, [user])
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const response = await loginService.login({ username, password })
-      const loggedInUser = {
+      const user = {
         name: response.user.name,
         username: response.user.username,
         token: response.token,
       }
-      setUser(loggedInUser)
+      window.localStorage.setItem('authenticatedUser', JSON.stringify(user))
+      setUser(user)
       setUsername('')
       setPassword('')
     } catch (error) {
-      console.error('Failed to log in:', error)
+      console.error('Failed to log in', error)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('authenticatedUser')
+    setUser(null)
   }
 
   return (
     <div>
       {user ? (
-        <BlogList blogs={blogs} user={user} />
+        <BlogList blogs={blogs} user={user} onLogout={handleLogout} />
       ) : (
         <LoginForm
           onLogin={handleLogin}
