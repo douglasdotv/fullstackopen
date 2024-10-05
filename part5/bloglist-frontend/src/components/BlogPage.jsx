@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import BlogForm from './BlogForm'
 import BlogList from './BlogList'
 import LoginForm from './LoginForm'
 import blogService from '../services/blogs'
@@ -9,6 +10,9 @@ const BlogPage = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('authenticatedUser')
@@ -40,6 +44,7 @@ const BlogPage = () => {
       }
       window.localStorage.setItem('authenticatedUser', JSON.stringify(user))
       setUser(user)
+      blogService.setToken(user.token)
       setUsername('')
       setPassword('')
     } catch (error) {
@@ -50,12 +55,37 @@ const BlogPage = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
+    blogService.setToken(null)
+  }
+
+  const handleCreateBlog = async (event) => {
+    event.preventDefault()
+    try {
+      const newBlog = await blogService.create({ title, author, url })
+      setBlogs(blogs.concat(newBlog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    } catch (error) {
+      console.error('Failed to create blog post', error)
+    }
   }
 
   return (
     <div>
       {user ? (
-        <BlogList blogs={blogs} user={user} onLogout={handleLogout} />
+        <>
+          <BlogList blogs={blogs} user={user} onLogout={handleLogout} />
+          <BlogForm
+            onSubmit={handleCreateBlog}
+            title={title}
+            setTitle={setTitle}
+            author={author}
+            setAuthor={setAuthor}
+            url={url}
+            setUrl={setUrl}
+          />
+        </>
       ) : (
         <LoginForm
           onLogin={handleLogin}
