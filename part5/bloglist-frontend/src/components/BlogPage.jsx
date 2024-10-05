@@ -47,14 +47,11 @@ const BlogPage = () => {
       window.localStorage.setItem('authenticatedUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
-      setNotification({ message: 'Logged in successfully', type: 'success' })
+      showNotification('Logged in successfully', 'success')
       setUsername('')
       setPassword('')
     } catch (error) {
-      setNotification({
-        message: `${error.response.data.error}`,
-        type: 'error',
-      })
+      showNotification(`${error.response.data.error}`, 'error')
     }
   }
 
@@ -62,7 +59,7 @@ const BlogPage = () => {
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
     blogService.setToken(null)
-    setNotification({ message: 'Logged out successfully', type: 'success' })
+    showNotification('Logged out successfully', 'success')
   }
 
   const handleCreateBlog = async (event) => {
@@ -70,19 +67,23 @@ const BlogPage = () => {
     try {
       const newBlog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(newBlog))
-      setNotification({
-        message: `${newBlog.title} by ${newBlog.author} created!`,
-        type: 'success',
-      })
+      showNotification(
+        `${newBlog.title} by ${newBlog.author} created!`,
+        'success'
+      )
       setTitle('')
       setAuthor('')
       setUrl('')
     } catch (error) {
-      setNotification({
-        message: `${error.response.data.error}`,
-        type: 'error',
-      })
+      showNotification(`${error.response.data.error}`, 'error')
     }
+  }
+
+  const showNotification = (message, type, duration = 3000) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification({ message: '', type: '' })
+    }, duration)
   }
 
   return (
