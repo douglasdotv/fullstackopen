@@ -33,10 +33,10 @@ const BlogPage = () => {
           const blogs = await blogService.getAll()
           setBlogs(blogs)
         } catch (error) {
-          setNotification({
-            message: 'Server is unreachable. Please try again later.',
-            type: 'error',
-          })
+          showNotification(
+            'Server is unreachable. Please try again later.',
+            'error'
+          )
         }
       }
     }
@@ -55,17 +55,14 @@ const BlogPage = () => {
       window.localStorage.setItem('authenticatedUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
-      setNotification({ message: 'Logged in successfully!', type: 'success' })
+      showNotification('Logged in successfully!', 'success')
       setUsername('')
       setPassword('')
     } catch (error) {
       const errorMessage =
         error.response?.data?.error ||
         'Server is unreachable. Please try again later.'
-      setNotification({
-        message: errorMessage,
-        type: 'error',
-      })
+      showNotification(errorMessage, 'error')
     }
   }
 
@@ -73,7 +70,7 @@ const BlogPage = () => {
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
     blogService.setToken(null)
-    setNotification({ message: 'Logged out successfully!', type: 'success' })
+    showNotification('Logged out successfully!', 'success')
   }
 
   const handleCreateBlog = async (event) => {
@@ -81,10 +78,7 @@ const BlogPage = () => {
     try {
       const newBlog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(newBlog))
-      setNotification({
-        message: `"${newBlog.title}" created!`,
-        type: 'success',
-      })
+      showNotification(`"${newBlog.title}" created!`, 'success')
       setTitle('')
       setAuthor('')
       setUrl('')
@@ -92,11 +86,15 @@ const BlogPage = () => {
       const errorMessage =
         error.response?.data?.error ||
         'Server is unreachable. Please try again later.'
-      setNotification({
-        message: errorMessage,
-        type: 'error',
-      })
+      showNotification(errorMessage, 'error')
     }
+  }
+
+  const showNotification = (message, type, duration = 3000) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification({ message: '', type: '' })
+    }, duration)
   }
 
   return (
