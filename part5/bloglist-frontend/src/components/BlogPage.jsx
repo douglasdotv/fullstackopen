@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import BlogForm from './BlogForm'
 import BlogList from './BlogList'
 import LoginForm from './LoginForm'
+import Notification from './Notification'
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState({ message: '', type: '' })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [title, setTitle] = useState('')
@@ -45,10 +47,12 @@ const BlogPage = () => {
       window.localStorage.setItem('authenticatedUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
+      setNotification({ message: 'Logged in successfully!', type: 'success' })
       setUsername('')
       setPassword('')
     } catch (error) {
       console.error('Failed to log in', error)
+      setNotification({ message: 'Failed to log in', type: 'error' })
     }
   }
 
@@ -56,6 +60,7 @@ const BlogPage = () => {
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
     blogService.setToken(null)
+    setNotification({ message: 'Logged out successfully!', type: 'success' })
   }
 
   const handleCreateBlog = async (event) => {
@@ -63,16 +68,24 @@ const BlogPage = () => {
     try {
       const newBlog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(newBlog))
+      setNotification({
+        message: `${newBlog.title} by ${newBlog.author} created!`,
+        type: 'success',
+      })
       setTitle('')
       setAuthor('')
       setUrl('')
     } catch (error) {
       console.error('Failed to create blog post', error)
+      setNotification({ message: 'Failed to create blog post', type: 'error' })
     }
   }
 
   return (
     <div>
+      {notification.message && (
+        <Notification message={notification.message} type={notification.type} />
+      )}
       {user ? (
         <>
           <BlogList blogs={blogs} user={user} onLogout={handleLogout} />
