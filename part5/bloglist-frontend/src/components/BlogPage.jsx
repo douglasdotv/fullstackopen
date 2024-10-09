@@ -87,6 +87,18 @@ const BlogPage = () => {
     }
   }
 
+  const handleRemoveBlog = async (id) => {
+    try {
+      const blogToRemove = blogs.find((blog) => blog.id === id)
+      await blogService.remove(id)
+      setBlogs(blogs.filter((blog) => blog.id !== id))
+      showNotification(`Removed ${blogToRemove.title}!`, 'success')
+    } catch (error) {
+      console.error('Failed to remove blog post', error)
+      showNotification('Failed to remove blog post', 'error')
+    }
+  }
+
   const showNotification = (message, type, duration = 3000) => {
     setNotification({ message, type })
     setTimeout(() => {
@@ -108,6 +120,7 @@ const BlogPage = () => {
             user={user}
             onLogout={handleLogout}
             onLike={handleUpdateBlog}
+            onRemove={handleRemoveBlog}
           />
           <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
             <BlogForm onSubmit={handleCreateBlog} />

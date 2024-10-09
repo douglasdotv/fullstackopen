@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Button from './Button'
 
-const Blog = ({ blog, onLike }) => {
+const Blog = ({ blog, onLike, onRemove }) => {
   const [isDetailsVisible, setIsDetailsVisible] = useState(false)
 
   const handleLike = () => {
@@ -10,6 +10,12 @@ const Blog = ({ blog, onLike }) => {
       likes: blog.likes + 1,
     }
     onLike(blog.id, updatedBlog)
+  }
+
+  const handleRemove = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      onRemove(blog.id)
+    }
   }
 
   const toggleDetails = () => setIsDetailsVisible(!isDetailsVisible)
@@ -29,6 +35,7 @@ const Blog = ({ blog, onLike }) => {
             <Button onClick={handleLike}>Like</Button>
           </p>
           <p>{blog.user.name}</p>
+          <Button onClick={handleRemove}>Remove</Button>
         </div>
       )}
     </div>
