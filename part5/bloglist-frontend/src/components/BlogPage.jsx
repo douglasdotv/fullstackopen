@@ -75,12 +75,12 @@ const BlogPage = () => {
 
   const handleUpdateBlog = async (id, updatedBlog) => {
     try {
-      const updatedBlogData = await blogService.update(id, {
+      await blogService.update(id, {
         ...updatedBlog,
         user: updatedBlog.user.id,
       })
-      setBlogs(blogs.map((blog) => (blog.id === id ? updatedBlogData : blog)))
-      showNotification(`Liked ${updatedBlogData.title}!`, 'success')
+      setBlogs(blogs.map((blog) => (blog.id === id ? updatedBlog : blog)))
+      showNotification(`Liked ${updatedBlog.title}!`, 'success')
     } catch (error) {
       console.error('Failed to update blog post', error)
       showNotification('Failed to update blog post', 'error')
