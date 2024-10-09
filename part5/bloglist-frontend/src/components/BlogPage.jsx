@@ -71,6 +71,19 @@ const BlogPage = () => {
     }
   }
 
+  const handleUpdateBlog = async (id, updatedBlog) => {
+    try {
+      const updatedBlogData = await blogService.update(id, {
+        ...updatedBlog,
+        user: updatedBlog.user.id,
+      })
+      setBlogs(blogs.map((blog) => (blog.id === id ? updatedBlogData : blog)))
+      showNotification(`Liked ${updatedBlogData.title}!`, 'success')
+    } catch (error) {
+      showNotification(`${error.response.data.error}`, 'error')
+    }
+  }
+
   const showNotification = (message, type, duration = 3000) => {
     setNotification({ message, type })
     setTimeout(() => {
@@ -85,7 +98,12 @@ const BlogPage = () => {
       )}
       {user ? (
         <>
-          <BlogList blogs={blogs} user={user} onLogout={handleLogout} />
+          <BlogList
+            blogs={blogs}
+            user={user}
+            onLogout={handleLogout}
+            onLike={handleUpdateBlog}
+          />
           <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
             <BlogForm onSubmit={handleCreateBlog} />
           </Toggleable>
