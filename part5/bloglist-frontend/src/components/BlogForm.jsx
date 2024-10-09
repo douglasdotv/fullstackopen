@@ -1,20 +1,25 @@
+import { useState } from 'react'
 import Button from './Button'
 import FormInput from './FormInput'
 import SectionTitle from './SectionTitle'
 
-const BlogForm = ({
-  onSubmit,
-  title,
-  setTitle,
-  author,
-  setAuthor,
-  url,
-  setUrl,
-}) => {
+const BlogForm = ({ onSubmit }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    onSubmit({ title, author, url })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
   return (
     <div>
       <SectionTitle text="Create a new blog post" level={2} />
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit}>
         <FormInput
           type="text"
           label="Title"
