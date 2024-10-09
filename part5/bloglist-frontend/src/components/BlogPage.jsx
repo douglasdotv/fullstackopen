@@ -83,6 +83,26 @@ const BlogPage = () => {
     }
   }
 
+  const handleUpdateBlog = async (id, updatedBlog) => {
+    try {
+      const updatedBlogResponse = await blogService.update(id, {
+        ...updatedBlog,
+        user: updatedBlog.user.id,
+      })
+
+      setBlogs(
+        blogs.map((blog) => (blog.id === id ? updatedBlogResponse : blog))
+      )
+
+      showNotification(`Liked "${updatedBlogResponse.title}"!`, 'success')
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error ||
+        'Server is unreachable. Please try again later.'
+      showNotification(errorMessage, 'error')
+    }
+  }
+
   const showNotification = (message, type, duration = 3000) => {
     if (notificationTimeoutRef.current) {
       clearTimeout(notificationTimeoutRef.current)
@@ -103,11 +123,11 @@ const BlogPage = () => {
       {user ? (
         <>
           <p>{user.name} logged in!</p>
-          <Button onClick={handleLogout}>Logout</Button>
+          <Button onClick={handleLogout}>Logout</Button>{' '}
           <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
             <BlogForm onSubmit={handleCreateBlog} />
           </Toggleable>
-          <BlogList blogs={blogs} />
+          <BlogList blogs={blogs} onLike={handleUpdateBlog} />
         </>
       ) : (
         <LoginForm onLogin={handleLogin} />
