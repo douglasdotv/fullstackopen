@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Button from './Button'
 
-const Blog = ({ blog, onLike }) => {
+const Blog = ({ blog, currentUser, onLike, onRemove }) => {
   const [expanded, setExpanded] = useState(false)
 
   const handleLike = () => {
@@ -12,7 +12,16 @@ const Blog = ({ blog, onLike }) => {
     onLike(blog.id, updatedBlog)
   }
 
+  const handleRemove = () => {
+    if (window.confirm(`Remove "${blog.title}"?`)) {
+      onRemove(blog.id)
+    }
+  }
+
   const toggleDetails = () => setExpanded(!expanded)
+
+  const blogUserId = blog.user.id || blog.user
+  const isBlogByCurrentUser = currentUser.id === blogUserId
 
   return (
     <div className="blog-post-container">
@@ -27,6 +36,9 @@ const Blog = ({ blog, onLike }) => {
             <Button onClick={handleLike}>Like</Button>
           </p>
           <p>{blog.user.name}</p>
+          {isBlogByCurrentUser && (
+            <Button onClick={handleRemove}>Remove</Button>
+          )}
         </div>
       )}
     </div>

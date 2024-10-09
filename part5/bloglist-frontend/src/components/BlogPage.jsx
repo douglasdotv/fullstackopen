@@ -106,6 +106,28 @@ const BlogPage = () => {
     }
   }
 
+  const handleRemoveBlog = async (id) => {
+    try {
+      const blogToRemove = blogs.find((blog) => blog.id === id)
+
+      if (!blogToRemove) {
+        showNotification(`Blog with id "${id}" not found.`, 'error')
+        return
+      }
+
+      await blogService.remove(id)
+
+      setBlogs(blogs.filter((blog) => blog.id !== id))
+
+      showNotification(`Removed "${blogToRemove.title}"!`, 'success')
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error ||
+        'Server is unreachable. Please try again later.'
+      showNotification(errorMessage, 'error')
+    }
+  }
+
   const showNotification = (message, type, duration = 3000) => {
     if (notificationTimeoutRef.current) {
       clearTimeout(notificationTimeoutRef.current)
@@ -128,10 +150,16 @@ const BlogPage = () => {
       {user ? (
         <>
           <p>{user.name} logged in!</p>
-          <Button onClick={handleLogout}>Logout</Button>{' '}
+          <Button onClick={handleLogout}>Logout</Button>
           <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
             <BlogForm onSubmit={handleCreateBlog} />
           </Toggleable>
+          <BlogList
+            blogs={sortedBlogs}
+            user={user}
+            onLike={handleUpdateBlog}
+            onRemove={handleRemoveBlog}
+          />
           <BlogList blogs={sortedBlogs} onLike={handleUpdateBlog} />
         </>
       ) : (
