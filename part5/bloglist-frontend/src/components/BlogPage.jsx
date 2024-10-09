@@ -37,6 +37,7 @@ const BlogPage = () => {
     try {
       const response = await loginService.login(credentials)
       const user = {
+        id: response.user.id,
         name: response.user.name,
         username: response.user.username,
         token: response.token,
