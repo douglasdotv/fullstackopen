@@ -91,6 +91,8 @@ const BlogPage = () => {
     }, duration)
   }
 
+  const sortedBlogs = blogs.slice().sort((a, b) => b.likes - a.likes)
+
   return (
     <div>
       {notification.message && (
@@ -99,7 +101,7 @@ const BlogPage = () => {
       {user ? (
         <>
           <BlogList
-            blogs={blogs}
+            blogs={sortedBlogs}
             user={user}
             onLogout={handleLogout}
             onLike={handleUpdateBlog}
