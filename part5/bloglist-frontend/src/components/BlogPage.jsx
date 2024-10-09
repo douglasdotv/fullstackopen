@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 import BlogForm from './BlogForm'
 import BlogList from './BlogList'
 import LoginForm from './LoginForm'
 import Notification from './Notification'
+import Toggleable from './Toggleable'
 import Button from './Button'
 
 const BlogPage = () => {
@@ -16,6 +17,8 @@ const BlogPage = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  const blogFormRef = useRef(null)
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('authenticatedUser')
@@ -82,6 +85,7 @@ const BlogPage = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      blogFormRef.current.toggleVisibility()
     } catch (error) {
       const errorMessage =
         error.response?.data?.error ||
@@ -106,15 +110,17 @@ const BlogPage = () => {
         <>
           <p>{user.name} logged in!</p>
           <Button onClick={handleLogout}>Logout</Button>
-          <BlogForm
-            onSubmit={handleCreateBlog}
-            title={title}
-            setTitle={setTitle}
-            author={author}
-            setAuthor={setAuthor}
-            url={url}
-            setUrl={setUrl}
-          />
+          <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
+            <BlogForm
+              onSubmit={handleCreateBlog}
+              title={title}
+              setTitle={setTitle}
+              author={author}
+              setAuthor={setAuthor}
+              url={url}
+              setUrl={setUrl}
+            />
+          </Toggleable>
           <BlogList blogs={blogs} />
         </>
       ) : (
