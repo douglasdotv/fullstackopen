@@ -117,6 +117,8 @@ const BlogPage = () => {
     }, duration)
   }
 
+  const sortedBlogs = blogs.slice().sort((a, b) => b.likes - a.likes)
+
   return (
     <div>
       {notification.message && (
@@ -129,7 +131,7 @@ const BlogPage = () => {
           <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
             <BlogForm onSubmit={handleCreateBlog} />
           </Toggleable>
-          <BlogList blogs={blogs} onLike={handleUpdateBlog} />
+          <BlogList blogs={sortedBlogs} onLike={handleUpdateBlog} />
         </>
       ) : (
         <LoginForm onLogin={handleLogin} />
