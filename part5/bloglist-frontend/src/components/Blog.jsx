@@ -7,13 +7,14 @@ const Blog = ({ blog }) => {
   const toggleDetails = () => setIsDetailsVisible(!isDetailsVisible)
 
   return (
-    <div>
-      {blog.title} {blog.author}
+    <div className="blog-post-container">
+      <div className="blog-post-title">{blog.title}</div>
+      <div className="blog-post-author">by {blog.author}</div>
       <Button onClick={toggleDetails}>
         {isDetailsVisible ? 'Hide' : 'View'}
       </Button>
       {isDetailsVisible && (
-        <div>
+        <div className="blog-post-details">
           <p>{blog.url}</p>
           <p>
             Likes: {blog.likes}
@@ -25,4 +26,5 @@ const Blog = ({ blog }) => {
     </div>
   )
 }
+
 export default Blog
