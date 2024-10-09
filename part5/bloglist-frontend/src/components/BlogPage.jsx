@@ -11,11 +11,6 @@ const BlogPage = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState({ message: '', type: '' })
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   const blogFormRef = useRef()
 
@@ -38,10 +33,9 @@ const BlogPage = () => {
     fetchBlogs()
   }, [user])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async (credentials) => {
     try {
-      const response = await loginService.login({ username, password })
+      const response = await loginService.login(credentials)
       const user = {
         name: response.user.name,
         username: response.user.username,
@@ -51,8 +45,6 @@ const BlogPage = () => {
       setUser(user)
       blogService.setToken(user.token)
       showNotification('Logged in successfully!', 'success')
-      setUsername('')
-      setPassword('')
     } catch (error) {
       console.error('Failed to log in', error)
       showNotification('Failed to log in', 'error')
@@ -66,18 +58,14 @@ const BlogPage = () => {
     showNotification('Logged out successfully!', 'success')
   }
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault()
+  const handleCreateBlog = async (newBlog) => {
     try {
-      const newBlog = await blogService.create({ title, author, url })
-      setBlogs(blogs.concat(newBlog))
+      const createdBlog = await blogService.create(newBlog)
+      setBlogs(blogs.concat(createdBlog))
       showNotification(
-        `${newBlog.title} by ${newBlog.author} created!`,
+        `${createdBlog.title} by ${createdBlog.author} created!`,
         'success'
       )
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       blogFormRef.current.toggleVisibility()
     } catch (error) {
       console.error('Failed to create blog post', error)
@@ -101,25 +89,11 @@ const BlogPage = () => {
         <>
           <BlogList blogs={blogs} user={user} onLogout={handleLogout} />
           <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
-            <BlogForm
-              onSubmit={handleCreateBlog}
-              title={title}
-              setTitle={setTitle}
-              author={author}
-              setAuthor={setAuthor}
-              url={url}
-              setUrl={setUrl}
-            />
+            <BlogForm onSubmit={handleCreateBlog} />
           </Toggleable>
         </>
       ) : (
-        <LoginForm
-          onLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-        />
+        <LoginForm onLogin={handleLogin} />
       )}
     </div>
   )
