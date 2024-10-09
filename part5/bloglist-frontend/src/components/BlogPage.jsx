@@ -91,7 +91,9 @@ const BlogPage = () => {
       })
 
       setBlogs(
-        blogs.map((blog) => (blog.id === id ? updatedBlogResponse : blog))
+        blogs.map((blog) =>
+          blog.id === id ? { ...updatedBlogResponse, user: blog.user } : blog
+        )
       )
 
       showNotification(`Liked "${updatedBlogResponse.title}"!`, 'success')
