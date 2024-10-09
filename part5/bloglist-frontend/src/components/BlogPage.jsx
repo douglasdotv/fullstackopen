@@ -14,6 +14,7 @@ const BlogPage = () => {
   const [notification, setNotification] = useState({ message: '', type: '' })
 
   const blogFormRef = useRef(null)
+  const notificationTimeoutRef = useRef(null)
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('authenticatedUser')
@@ -83,8 +84,13 @@ const BlogPage = () => {
   }
 
   const showNotification = (message, type, duration = 3000) => {
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current)
+    }
+
     setNotification({ message, type })
-    setTimeout(() => {
+
+    notificationTimeoutRef.current = setTimeout(() => {
       setNotification({ message: '', type: '' })
     }, duration)
   }
