@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 import FormInput from './FormInput'
 import Button from './Button'
 import SectionTitle from './SectionTitle'
@@ -38,6 +39,10 @@ const LoginForm = ({ onLogin }) => {
       </form>
     </div>
   )
+}
+
+LoginForm.propTypes = {
+  onLogin: PropTypes.func.isRequired,
 }
 
 export default LoginForm
