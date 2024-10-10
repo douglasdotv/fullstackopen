@@ -36,4 +36,6 @@ Toggleable.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
+Toggleable.displayName = 'Toggleable'
+
 export default Toggleable
