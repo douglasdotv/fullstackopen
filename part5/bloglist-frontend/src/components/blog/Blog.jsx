@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 import Button from '../common/Button'
 
 const Blog = ({ blog, currentUser, onLike, onRemove }) => {
@@ -43,6 +44,31 @@ const Blog = ({ blog, currentUser, onLike, onRemove }) => {
       )}
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    user: PropTypes.oneOfType([
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        username: PropTypes.string,
+      }),
+      PropTypes.string,
+    ]).isRequired,
+    likes: PropTypes.number.isRequired,
+    author: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
+  currentUser: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }).isRequired,
+  onLike: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
 }
 
 export default Blog
