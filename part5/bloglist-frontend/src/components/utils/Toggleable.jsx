@@ -1,5 +1,5 @@
 import { useState, forwardRef, useImperativeHandle } from 'react'
-import Button from './Button'
+import Button from '../common/Button'
 
 const Toggleable = forwardRef(({ children, buttonLabel }, ref) => {
   const [visible, setVisible] = useState(false)

@@ -1,15 +1,14 @@
-import Form from './Form'
 import { useState } from 'react'
-import FormInput from './FormInput'
-import Button from './Button'
-import SectionTitle from './SectionTitle'
+import Form from '../common/Form'
+import FormInput from '../common/FormInput'
+import Button from '../common/Button'
+import SectionTitle from '../common/SectionTitle'
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
+  const handleSubmit = () => {
     onLogin({ username, password })
     setUsername('')
     setPassword('')

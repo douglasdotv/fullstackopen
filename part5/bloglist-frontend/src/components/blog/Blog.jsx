@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Button from './Button'
+import Button from '../common/Button'
 
 const Blog = ({ blog, currentUser, onLike, onRemove }) => {
   const [expanded, setExpanded] = useState(false)

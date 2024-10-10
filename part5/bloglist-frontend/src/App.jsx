@@ -1,4 +1,4 @@
-import BlogPage from './components/BlogPage'
+import BlogPage from './components/blog/BlogPage'
 
 const App = () => <BlogPage />
 

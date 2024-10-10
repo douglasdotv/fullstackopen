@@ -1,16 +1,15 @@
-import Form from './Form'
 import { useState } from 'react'
-import Button from './Button'
-import FormInput from './FormInput'
-import SectionTitle from './SectionTitle'
+import Form from '../common/Form'
+import FormInput from '../common/FormInput'
+import Button from '../common/Button'
+import SectionTitle from '../common/SectionTitle'
 
 const BlogForm = ({ onSubmit }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
+  const handleSubmit = () => {
     onSubmit({ title, author, url })
     setTitle('')
     setAuthor('')

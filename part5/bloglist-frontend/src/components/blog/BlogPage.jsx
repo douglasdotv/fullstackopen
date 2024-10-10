@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import blogService from '../services/blogs'
-import loginService from '../services/login'
+import blogService from '../../services/blogs'
+import loginService from '../../services/login'
 import BlogForm from './BlogForm'
 import BlogList from './BlogList'
-import LoginForm from './LoginForm'
-import Notification from './Notification'
-import Toggleable from './Toggleable'
-import Button from './Button'
+import LoginForm from '../auth/LoginForm'
+import Notification from '../utils/Notification'
+import Toggleable from '../utils/Toggleable'
+import Button from '../common/Button'
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([])

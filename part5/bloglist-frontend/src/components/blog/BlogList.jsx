@@ -1,5 +1,5 @@
 import Blog from './Blog'
-import SectionTitle from './SectionTitle'
+import SectionTitle from '../common/SectionTitle'
 
 const BlogList = ({ blogs, user, onLike, onRemove }) => (
   <div>
