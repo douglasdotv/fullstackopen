@@ -71,5 +71,23 @@ describe('Blog app', () => {
       await expect(title).toBeVisible()
       await expect(author).toBeVisible()
     })
+
+    test('Should successfully like a blog post', async ({ page }) => {
+      await page.getByRole('button', { name: 'New blog post' }).click()
+      await page.getByLabel('Title').fill('Blog to Like')
+      await page.getByLabel('Author').fill('Author')
+      await page.getByLabel('URL').fill('http://likethisblog.com')
+      await page.getByRole('button', { name: 'Create' }).click()
+
+      const blogPostContainer = page.locator('.blog-post-container', {
+        hasText: 'Blog to Like',
+      })
+
+      await blogPostContainer.getByRole('button', { name: 'View' }).click()
+      await blogPostContainer.getByRole('button', { name: 'Like' }).click()
+
+      const likesText = blogPostContainer.locator('p', { hasText: 'Likes: 1' })
+      await expect(likesText).toBeVisible()
+    })
   })
 })
