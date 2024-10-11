@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { login, createBlog, likeBlog } = require('./helper')
+const { login, createBlog, likeBlog, removeBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -81,6 +81,23 @@ describe('Blog app', () => {
         hasText: 'Likes: 1',
       })
       await expect(likesText).toBeVisible()
+    })
+
+    test('Should allow the user who created the blog post to remove it', async ({
+      page,
+    }) => {
+      await createBlog(
+        page,
+        'Blog to Remove',
+        'Author',
+        'http://removethisblog.com'
+      )
+      await removeBlog(page, 'Blog to Remove')
+
+      const blogPostContainer = page.locator('.blog-post-container', {
+        hasText: 'Blog to Remove',
+      })
+      await expect(blogPostContainer).not.toBeVisible()
     })
   })
 })
