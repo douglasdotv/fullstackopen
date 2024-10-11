@@ -16,12 +16,17 @@ const createBlog = async (page, title, author, url) => {
   await blogPostContainer.getByText(title).waitFor()
 }
 
-const likeBlog = async (page, title) => {
+const likeBlog = async (page, title, likes = 1) => {
   const blogPostContainer = page.locator('.blog-post-container', {
     hasText: title,
   })
   await blogPostContainer.getByRole('button', { name: 'View' }).click()
-  await blogPostContainer.getByRole('button', { name: 'Like' }).click()
+  for (let i = 1; i <= likes; ++i) {
+    await blogPostContainer.getByRole('button', { name: 'Like' }).click()
+    await blogPostContainer
+      .locator('p', { hasText: `Likes: ${i}` })
+      .waitFor({ timeout: 5000 })
+  }
   return blogPostContainer
 }
 
