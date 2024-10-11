@@ -1,4 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { login, createBlog, likeBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -27,17 +28,13 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('Should succeed with correct credentials', async ({ page }) => {
-      await page.getByLabel('Username').fill('douglas')
-      await page.getByLabel('Password').fill('123456')
-      await page.getByRole('button', { name: 'Login' }).click()
+      await login(page, 'douglas', '123456')
 
       await expect(page.getByText('Douglas Vieira logged in!')).toBeVisible()
     })
 
     test('Should fail with wrong credentials', async ({ page }) => {
-      await page.getByLabel('Username').fill('douglas')
-      await page.getByLabel('Password').fill('wrongpassword')
-      await page.getByRole('button', { name: 'Login' }).click()
+      await login(page, 'douglas', 'wrongpassword')
 
       const errorDiv = await page.locator('.notification.error')
       await expect(errorDiv).toContainText('Invalid username or password')
@@ -49,17 +46,16 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      await page.getByLabel('Username').fill('douglas')
-      await page.getByLabel('Password').fill('123456')
-      await page.getByRole('button', { name: 'Login' }).click()
+      await login(page, 'douglas', '123456')
     })
 
     test('Should successfully create a new blog post', async ({ page }) => {
-      await page.getByRole('button', { name: 'New blog post' }).click()
-      await page.getByLabel('Title').fill('My New Blog')
-      await page.getByLabel('Author').fill('Douglas Vieira')
-      await page.getByLabel('URL').fill('http://newblog.com')
-      await page.getByRole('button', { name: 'Create' }).click()
+      await createBlog(
+        page,
+        'My New Blog',
+        'Douglas Vieira',
+        'http://newblog.com'
+      )
 
       const title = page.locator('.blog-post-title', {
         hasText: 'My New Blog',
@@ -73,20 +69,17 @@ describe('Blog app', () => {
     })
 
     test('Should successfully like a blog post', async ({ page }) => {
-      await page.getByRole('button', { name: 'New blog post' }).click()
-      await page.getByLabel('Title').fill('Blog to Like')
-      await page.getByLabel('Author').fill('Author')
-      await page.getByLabel('URL').fill('http://likethisblog.com')
-      await page.getByRole('button', { name: 'Create' }).click()
+      await createBlog(
+        page,
+        'Blog to Like',
+        'Author',
+        'http://likethisblog.com'
+      )
+      const likedBlogPostContainer = await likeBlog(page, 'Blog to Like')
 
-      const blogPostContainer = page.locator('.blog-post-container', {
-        hasText: 'Blog to Like',
+      const likesText = likedBlogPostContainer.locator('p', {
+        hasText: 'Likes: 1',
       })
-
-      await blogPostContainer.getByRole('button', { name: 'View' }).click()
-      await blogPostContainer.getByRole('button', { name: 'Like' }).click()
-
-      const likesText = blogPostContainer.locator('p', { hasText: 'Likes: 1' })
       await expect(likesText).toBeVisible()
     })
   })
