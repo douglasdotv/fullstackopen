@@ -25,9 +25,9 @@ describe('Blog app', () => {
   })
 
   test('Should display login form by default', async ({ page }) => {
-    const usernameInput = await page.getByLabel('Username')
-    const passwordInput = await page.getByLabel('Password')
-    const loginButton = await page.getByRole('button', { name: 'Login' })
+    const usernameInput = page.getByLabel('Username')
+    const passwordInput = page.getByLabel('Password')
+    const loginButton = page.getByRole('button', { name: 'Login' })
 
     await expect(usernameInput).toBeVisible()
     await expect(passwordInput).toBeVisible()
@@ -44,7 +44,7 @@ describe('Blog app', () => {
     test('Should fail with wrong credentials', async ({ page }) => {
       await login(page, 'douglas', 'wrongpassword')
 
-      const errorDiv = await page.locator('.notification.error')
+      const errorDiv = page.locator('.notification.error')
       await expect(errorDiv).toContainText('Invalid username or password')
       await expect(
         page.getByText('Douglas Vieira logged in!')
