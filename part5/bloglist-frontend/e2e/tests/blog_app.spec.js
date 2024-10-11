@@ -133,5 +133,45 @@ describe('Blog app', () => {
       await blogPostContainer.getByRole('button', { name: 'View' }).click()
       await expect(removeButton).not.toBeVisible()
     })
+
+    test('Should display blog posts sorted by amount of likes in descending order', async ({
+      page,
+    }) => {
+      await createBlog(page, 'With 1 like', 'Author1', 'http://like1.com')
+      await createBlog(page, 'With 3 likes', 'Author3', 'http://like3.com')
+      await createBlog(page, 'With 5 likes', 'Author5', 'http://like5.com')
+
+      await likeBlog(page, 'With 1 like', 1)
+      await likeBlog(page, 'With 3 likes', 3)
+      await likeBlog(page, 'With 5 likes', 5)
+
+      await expect(
+        page
+          .locator('.blog-post-container', { hasText: 'With 5 likes' })
+          .locator('p', { hasText: 'Likes: 5' })
+      ).toBeVisible()
+
+      await expect(
+        page
+          .locator('.blog-post-container', { hasText: 'With 3 likes' })
+          .locator('p', { hasText: 'Likes: 3' })
+      ).toBeVisible()
+
+      await expect(
+        page
+          .locator('.blog-post-container', { hasText: 'With 1 like' })
+          .locator('p', { hasText: 'Likes: 1' })
+      ).toBeVisible()
+
+      const blogTitles = await page
+        .locator('.blog-post-title')
+        .allTextContents()
+
+      expect(blogTitles).toEqual([
+        'With 5 likes',
+        'With 3 likes',
+        'With 1 like',
+      ])
+    })
   })
 })
