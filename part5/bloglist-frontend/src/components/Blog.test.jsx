@@ -16,6 +16,8 @@ const blog = {
 const mockOnLike = vi.fn()
 const mockOnRemove = vi.fn()
 
+const user = userEvent.setup()
+
 test('Should render blog post title and author, but does not render url or likes by default', () => {
   render(<Blog blog={blog} onLike={mockOnLike} onRemove={mockOnRemove} />)
 
@@ -35,7 +37,6 @@ test('Should render blog post title and author, but does not render url or likes
 test('Should show blog post url and likes when the view button is clicked', async () => {
   render(<Blog blog={blog} onLike={mockOnLike} onRemove={mockOnRemove} />)
 
-  const user = userEvent.setup()
   const viewButton = screen.getByText('View')
   await user.click(viewButton)
 
@@ -44,4 +45,17 @@ test('Should show blog post url and likes when the view button is clicked', asyn
 
   expect(urlElement).toBeDefined()
   expect(likesElement).toBeDefined()
+})
+
+test('Should call the like event handler twice when the like button is clicked twice', async () => {
+  render(<Blog blog={blog} onLike={mockOnLike} onRemove={mockOnRemove} />)
+
+  const viewButton = screen.getByText('View')
+  await user.click(viewButton)
+
+  const likeButton = screen.getByText('Like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockOnLike.mock.calls).toHaveLength(2)
 })
