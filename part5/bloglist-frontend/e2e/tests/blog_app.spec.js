@@ -46,4 +46,30 @@ describe('Blog app', () => {
       ).not.toBeVisible()
     })
   })
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByLabel('Username').fill('douglas')
+      await page.getByLabel('Password').fill('123456')
+      await page.getByRole('button', { name: 'Login' }).click()
+    })
+
+    test('Should successfully create a new blog post', async ({ page }) => {
+      await page.getByRole('button', { name: 'New blog post' }).click()
+      await page.getByLabel('Title').fill('My New Blog')
+      await page.getByLabel('Author').fill('Douglas Vieira')
+      await page.getByLabel('URL').fill('http://newblog.com')
+      await page.getByRole('button', { name: 'Create' }).click()
+
+      const title = page.locator('.blog-post-title', {
+        hasText: 'My New Blog',
+      })
+      const author = page.locator('.blog-post-author', {
+        hasText: 'Douglas Vieira',
+      })
+
+      await expect(title).toBeVisible()
+      await expect(author).toBeVisible()
+    })
+  })
 })
