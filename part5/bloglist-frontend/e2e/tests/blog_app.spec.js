@@ -13,6 +13,14 @@ describe('Blog app', () => {
       },
     })
 
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Another User',
+        username: 'another',
+        password: 'password',
+      },
+    })
+
     await page.goto('http://localhost:5173')
   })
 
@@ -98,6 +106,32 @@ describe('Blog app', () => {
         hasText: 'Blog to Remove',
       })
       await expect(blogPostContainer).not.toBeVisible()
+    })
+
+    test('Should only show remove button to the user who created the blog post', async ({
+      page,
+    }) => {
+      await createBlog(
+        page,
+        'Remove Button Visibility',
+        'Douglas',
+        'http://ok.com'
+      )
+
+      const blogPostContainer = page.locator('.blog-post-container', {
+        hasText: 'Remove Button Visibility',
+      })
+      await blogPostContainer.getByRole('button', { name: 'View' }).click()
+      const removeButton = blogPostContainer.getByRole('button', {
+        name: 'Remove',
+      })
+      await expect(removeButton).toBeVisible()
+
+      await page.getByRole('button', { name: 'Logout' }).click()
+      await login(page, 'another', 'password')
+
+      await blogPostContainer.getByRole('button', { name: 'View' }).click()
+      await expect(removeButton).not.toBeVisible()
     })
   })
 })
