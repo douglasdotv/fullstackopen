@@ -25,4 +25,15 @@ const likeBlog = async (page, title) => {
   return blogPostContainer
 }
 
-export { login, createBlog, likeBlog }
+const removeBlog = async (page, title) => {
+  const blogPostContainer = page.locator('.blog-post-container', {
+    hasText: title,
+  })
+  await blogPostContainer.getByRole('button', { name: 'View' }).click()
+  page.on('dialog', async (dialog) => {
+    await dialog.accept()
+  })
+  await blogPostContainer.getByRole('button', { name: 'Remove' }).click()
+}
+
+export { login, createBlog, likeBlog, removeBlog }
