@@ -1,0 +1,1 @@
+This part of the course introduces Redux for state management in React applications, along with React's context and useReducer hook. It also covers React Query for managing server state, and discusses communication with servers in a Redux application.
