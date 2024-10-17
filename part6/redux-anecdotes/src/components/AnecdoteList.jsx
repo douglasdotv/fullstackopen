@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { anecdoteVoteCast } from '../slices/anecdotesSlice'
+import { handleNotification } from '../utils/utils'
 import Anecdote from './Anecdote'
 
 const AnecdoteList = () => {
@@ -7,8 +8,9 @@ const AnecdoteList = () => {
   const anecdotes = useSelector((state) => state.anecdotes)
   const filter = useSelector((state) => state.filter)
 
-  const handleVote = (id) => {
-    dispatch(anecdoteVoteCast(id))
+  const handleVote = (anecdote) => {
+    dispatch(anecdoteVoteCast(anecdote.id))
+    handleNotification(dispatch, `You voted for "${anecdote.content}"`)
   }
 
   const filteredAndSortedAnecdotes = [...anecdotes]
@@ -23,7 +25,7 @@ const AnecdoteList = () => {
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          onVote={() => handleVote(anecdote.id)}
+          onVote={() => handleVote(anecdote)}
         />
       ))}
     </div>
