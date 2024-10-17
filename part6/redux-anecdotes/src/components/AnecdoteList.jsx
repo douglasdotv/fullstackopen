@@ -3,18 +3,24 @@ import { voteForAnecdote } from '../reducers/anecdotesReducer'
 import Anecdote from './Anecdote'
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector((state) => state)
+  const anecdotes = useSelector((state) => state.anecdotes)
+  const filter = useSelector((state) => state.filter)
+
   const dispatch = useDispatch()
 
   const handleVote = (id) => {
     dispatch(voteForAnecdote(id))
   }
 
-  const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
+  const filteredAndSortedAnecdotes = anecdotes
+    .filter((anecdote) =>
+      anecdote.content.toLowerCase().includes(filter.toLowerCase())
+    )
+    .sort((a, b) => b.votes - a.votes)
 
   return (
     <div>
-      {sortedAnecdotes.map((anecdote) => (
+      {filteredAndSortedAnecdotes.map((anecdote) => (
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
