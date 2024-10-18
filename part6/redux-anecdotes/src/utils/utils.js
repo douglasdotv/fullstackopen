@@ -17,5 +17,3 @@ export const handleNotification = (dispatch, message) => {
     timeoutId = null
   }, 5000)
 }
-
-export const generateId = () => (100000 * Math.random()).toFixed(0)
