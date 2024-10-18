@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
 import { createAnecdote } from '../slices/anecdotesSlice'
-import { handleNotification } from '../utils/utils'
+import { showNotification } from '../slices/notificationSlice'
 import Form from './Form'
 import Input from './Input'
 import Button from './Button'
@@ -13,7 +13,7 @@ const AnecdoteForm = () => {
     const content = event.target.anecdoteContent.value
     event.target.anecdoteContent.value = ''
     dispatch(createAnecdote(content))
-    handleNotification(dispatch, `Anecdote "${content}" successfully created`)
+    dispatch(showNotification(`Anecdote "${content}" successfully created`, 10))
   }
 
   return (
