@@ -12,4 +12,9 @@ const create = async (anecdote) => {
   return response.data
 }
 
-export default { getAll, create }
+const update = async (id, updatedFields) => {
+  const response = await axios.patch(`${baseUrl}/${id}`, updatedFields)
+  return response.data
+}
+
+export default { getAll, create, update }
