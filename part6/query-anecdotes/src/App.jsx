@@ -1,35 +1,14 @@
+import AnecdoteList from './components/AnecdoteList'
 import AnecdoteForm from './components/AnecdoteForm'
-import Notification from './components/Notification'
+import Heading from './components/Heading'
 
 const App = () => {
-  const handleVote = (anecdote) => {
-    console.log('vote')
-  }
-
-  const anecdotes = [
-    {
-      content: 'If it hurts, do it more often',
-      id: '47145',
-      votes: 0,
-    },
-  ]
-
   return (
     <div>
-      <h3>Anecdote app</h3>
-
-      <Notification />
+      <Heading>Anecdotes</Heading>
+      <AnecdoteList />
+      <Heading level={3}>Create a new anecdote</Heading>
       <AnecdoteForm />
-
-      {anecdotes.map((anecdote) => (
-        <div key={anecdote.id}>
-          <div>{anecdote.content}</div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => handleVote(anecdote)}>vote</button>
-          </div>
-        </div>
-      ))}
     </div>
   )
 }
