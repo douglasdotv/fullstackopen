@@ -1,9 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAnecdotes, updateAnecdote } from '../requests/anecdotes'
+import { useNotificationDispatch } from '../contexts/notification/useNotificationHooks'
 import Anecdote from './Anecdote'
 
 const AnecdoteList = () => {
   const queryClient = useQueryClient()
+  const showNotification = useNotificationDispatch()
 
   const { data, isError, error, isLoading } = useQuery({
     queryKey: ['anecdotes'],
@@ -20,6 +22,13 @@ const AnecdoteList = () => {
         anecdote.id === updatedAnecdote.id ? updatedAnecdote : anecdote
       )
       queryClient.setQueryData(['anecdotes'], updatedAnecdotes)
+      showNotification(`You voted for '${updatedAnecdote.content}'`, 'success')
+    },
+    onError: (error) => {
+      showNotification(
+        error.response?.data?.error || 'An unexpected error occurred',
+        'error'
+      )
     },
   })
 
