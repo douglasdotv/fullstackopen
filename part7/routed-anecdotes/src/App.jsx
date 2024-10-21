@@ -1,21 +1,22 @@
 import { useState } from 'react'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 
 const Menu = () => {
-  const style = {
+  const linkStyle = {
     paddingRight: 5,
   }
 
   return (
     <div>
-      <a href="#" style={style}>
+      <Link to="/" style={linkStyle}>
         Anecdotes
-      </a>
-      <a href="#" style={style}>
+      </Link>
+      <Link to="/create" style={linkStyle}>
         Create
-      </a>
-      <a href="#" style={style}>
+      </Link>
+      <Link to="/about" style={linkStyle}>
         About
-      </a>
+      </Link>
     </div>
   )
 }
@@ -36,14 +37,19 @@ const CreateAnecdote = ({ onCreate }) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const navigate = useNavigate()
+
   const handleSubmit = (e) => {
     e.preventDefault()
+
     onCreate({
       content: content,
       author: author,
       info: info,
       votes: 0,
     })
+
+    navigate('/')
   }
 
   return (
@@ -150,9 +156,14 @@ const App = () => {
     <div>
       <h1>Software Anecdotes</h1>
       <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <CreateAnecdote onCreate={handleCreateAnecdote} />
-      <About />
+      <Routes>
+        <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
+        <Route
+          path="/create"
+          element={<CreateAnecdote onCreate={handleCreateAnecdote} />}
+        />
+        <Route path="/about" element={<About />} />
+      </Routes>
       <Footer />
     </div>
   )
