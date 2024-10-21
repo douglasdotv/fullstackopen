@@ -52,12 +52,19 @@ const AnecdoteDetail = ({ anecdote }) => {
   )
 }
 
-const CreateAnecdote = ({ onCreate }) => {
+const CreateAnecdote = ({ onCreate, setNotification }) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
   const navigate = useNavigate()
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification({ message: '', type: '' })
+    }, 5000)
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -68,6 +75,8 @@ const CreateAnecdote = ({ onCreate }) => {
       info: info,
       votes: 0,
     })
+
+    showNotification(`Anecdote "${content}" successfully created`, 'success')
 
     navigate('/')
   }
@@ -149,6 +158,31 @@ const Footer = () => {
     </div>
   )
 }
+
+const Notification = ({ message, type }) => {
+  if (!message) {
+    return null
+  }
+
+  const style = {
+    color: '#FFFFFF',
+    background: type === 'error' ? '#FF6347' : '#32CD32',
+    fontSize: 16,
+    fontWeight: 'bold',
+    borderStyle: 'solid',
+    borderColor: type === 'error' ? '#FF4500' : '#228B22',
+    borderRadius: 8,
+    padding: '15px 20px',
+    marginBottom: 15,
+  }
+
+  return (
+    <div style={style}>
+      {type === 'success' ? '✔️' : '⚠️'}
+      <span>{message}</span>
+    </div>
+  )
+}
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -167,6 +201,8 @@ const App = () => {
     },
   ])
 
+  const [notification, setNotification] = useState({ message: '', type: '' })
+
   const handleCreateAnecdote = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
@@ -181,6 +217,7 @@ const App = () => {
     <div>
       <h1>Software Anecdotes</h1>
       <Menu />
+      <Notification message={notification.message} type={notification.type} />
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route
@@ -189,7 +226,12 @@ const App = () => {
         />
         <Route
           path="/create"
-          element={<CreateAnecdote onCreate={handleCreateAnecdote} />}
+          element={
+            <CreateAnecdote
+              onCreate={handleCreateAnecdote}
+              setNotification={setNotification}
+            />
+          }
         />
         <Route path="/about" element={<About />} />
       </Routes>
