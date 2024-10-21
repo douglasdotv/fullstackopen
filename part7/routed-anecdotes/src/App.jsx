@@ -1,188 +1,14 @@
 import { useState } from 'react'
-import { Routes, Route, Link, useNavigate, useMatch } from 'react-router-dom'
+import { Routes, Route, useMatch } from 'react-router-dom'
+import Menu from './components/layout/Menu'
+import Footer from './components/layout/Footer'
+import AnecdoteList from './components/features/AnecdoteList'
+import AnecdoteDetail from './components/features/AnecdoteDetail'
+import CreateAnecdote from './components/features/CreateAnecdote'
+import About from './components/features/About'
+import Heading from './components/common/Heading'
+import Notification from './components/common/Notification'
 
-const Menu = () => {
-  const linkStyle = {
-    paddingRight: 5,
-  }
-
-  return (
-    <div>
-      <Link to="/" style={linkStyle}>
-        Anecdotes
-      </Link>
-      <Link to="/create" style={linkStyle}>
-        Create
-      </Link>
-      <Link to="/about" style={linkStyle}>
-        About
-      </Link>
-    </div>
-  )
-}
-
-const AnecdoteList = ({ anecdotes }) => (
-  <div>
-    <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>
-          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-        </li>
-      ))}
-    </ul>
-  </div>
-)
-
-const AnecdoteDetail = ({ anecdote }) => {
-  if (!anecdote) {
-    return <p>Anecdote not found</p>
-  }
-
-  return (
-    <div>
-      <h2>“{anecdote.content}”</h2>
-      <h3>by {anecdote.author}</h3>
-      <p>This anecdote has received {anecdote.votes} votes.</p>
-      <p>
-        For more information, click <a href={anecdote.info}>here</a>.
-      </p>
-      <hr />
-    </div>
-  )
-}
-
-const CreateAnecdote = ({ onCreate, setNotification }) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-
-  const navigate = useNavigate()
-
-  const showNotification = (message, type) => {
-    setNotification({ message, type })
-    setTimeout(() => {
-      setNotification({ message: '', type: '' })
-    }, 5000)
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    onCreate({
-      content: content,
-      author: author,
-      info: info,
-      votes: 0,
-    })
-
-    showNotification(`Anecdote "${content}" successfully created`, 'success')
-
-    navigate('/')
-  }
-
-  return (
-    <div>
-      <h2>Create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          Content:{' '}
-          <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-        </div>
-        <div>
-          Author:{' '}
-          <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
-        </div>
-        <div>
-          Info (URL):{' '}
-          <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
-        </div>
-        <button>Create</button>
-      </form>
-    </div>
-  )
-}
-
-const About = () => (
-  <div>
-    <h2>About</h2>
-    <p>According to Wikipedia:</p>
-    <em>
-      An anecdote is a brief, revealing account of an individual person or an
-      incident. Occasionally humorous, anecdotes differ from jokes because their
-      primary purpose is not simply to provoke laughter but to reveal a truth
-      more general than the brief tale itself, such as to characterize a person
-      by delineating a specific quirk or trait, to communicate an abstract idea
-      about a person, place, or thing through the concrete details of a short
-      narrative. An anecdote is a story with a point.
-    </em>
-    <p>
-      Software engineering is full of excellent anecdotes. With this app you can
-      find the best and add more.
-    </p>
-  </div>
-)
-
-const Footer = () => {
-  const style = {
-    background: '#F0F0F0',
-    color: '#333333',
-    fontSize: 16,
-    fontFamily: "'Press Start 2P', 'Orbitron', monospace",
-    borderStyle: 'solid',
-    borderColor: '#00FFFF',
-    borderWidth: 2,
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    boxShadow: '0 0 5px #00FFFF',
-    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.4)',
-  }
-
-  return (
-    <div style={style}>
-      Anecdote app for{' '}
-      <a href="https://fullstackopen.com/en/part7">Full Stack Open part7</a>
-    </div>
-  )
-}
-
-const Notification = ({ message, type }) => {
-  if (!message) {
-    return null
-  }
-
-  const style = {
-    color: '#FFFFFF',
-    background: type === 'error' ? '#FF6347' : '#32CD32',
-    fontSize: 16,
-    fontWeight: 'bold',
-    borderStyle: 'solid',
-    borderColor: type === 'error' ? '#FF4500' : '#228B22',
-    borderRadius: 8,
-    padding: '15px 20px',
-    marginBottom: 15,
-  }
-
-  return (
-    <div style={style}>
-      {type === 'success' ? '✔️' : '⚠️'}
-      <span>{message}</span>
-    </div>
-  )
-}
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -215,7 +41,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Software Anecdotes</h1>
+      <Heading level={1}>Software Anecdotes</Heading>
       <Menu />
       <Notification message={notification.message} type={notification.type} />
       <Routes>
