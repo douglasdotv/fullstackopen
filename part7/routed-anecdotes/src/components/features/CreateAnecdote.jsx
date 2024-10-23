@@ -1,14 +1,14 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useField from '../../hooks/useField'
 import Button from '../common/Button'
 import Form from '../common/Form'
 import InputField from '../common/InputField'
 import Heading from '../common/Heading'
 
 const CreateAnecdote = ({ onCreate, setNotification }) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const contentField = useField('text')
+  const authorField = useField('text')
+  const infoField = useField('text')
 
   const navigate = useNavigate()
 
@@ -23,13 +23,16 @@ const CreateAnecdote = ({ onCreate, setNotification }) => {
     e.preventDefault()
 
     onCreate({
-      content,
-      author,
-      info,
+      content: contentField.value,
+      author: authorField.value,
+      info: infoField.value,
       votes: 0,
     })
 
-    showNotification(`Anecdote "${content}" successfully created`, 'success')
+    showNotification(
+      `Anecdote "${contentField.value}" successfully created`,
+      'success'
+    )
 
     navigate('/')
   }
@@ -38,24 +41,9 @@ const CreateAnecdote = ({ onCreate, setNotification }) => {
     <div>
       <Heading level={2}>Create a new anecdote</Heading>
       <Form onSubmit={handleSubmit}>
-        <InputField
-          name="content"
-          label="Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <InputField
-          name="author"
-          label="Author"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-        />
-        <InputField
-          name="info"
-          label="Info (URL)"
-          value={info}
-          onChange={(e) => setInfo(e.target.value)}
-        />
+        <InputField name="content" label="Content" {...contentField} />
+        <InputField name="author" label="Author" {...authorField} />
+        <InputField name="info" label="Info (URL)" {...infoField} />
         <Button type="submit">Create</Button>
       </Form>
     </div>
