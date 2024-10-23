@@ -19,6 +19,12 @@ const CreateAnecdote = ({ onCreate, setNotification }) => {
     }, 5000)
   }
 
+  const handleResetFields = () => {
+    contentField.reset()
+    authorField.reset()
+    infoField.reset()
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
 
@@ -28,6 +34,8 @@ const CreateAnecdote = ({ onCreate, setNotification }) => {
       info: infoField.value,
       votes: 0,
     })
+
+    handleResetFields()
 
     showNotification(
       `Anecdote "${contentField.value}" successfully created`,
@@ -41,10 +49,15 @@ const CreateAnecdote = ({ onCreate, setNotification }) => {
     <div>
       <Heading level={2}>Create a new anecdote</Heading>
       <Form onSubmit={handleSubmit}>
-        <InputField name="content" label="Content" {...contentField} />
-        <InputField name="author" label="Author" {...authorField} />
-        <InputField name="info" label="Info (URL)" {...infoField} />
+        <InputField
+          name="content"
+          label="Content"
+          {...contentField.inputProps}
+        />
+        <InputField name="author" label="Author" {...authorField.inputProps} />
+        <InputField name="info" label="Info (URL)" {...infoField.inputProps} />
         <Button type="submit">Create</Button>
+        <Button onClick={handleResetFields}>Reset</Button>
       </Form>
     </div>
   )
