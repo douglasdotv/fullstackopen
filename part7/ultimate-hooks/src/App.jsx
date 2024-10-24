@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const useField = (type) => {
   const [value, setValue] = useState('')
@@ -17,8 +18,27 @@ const useField = (type) => {
 const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
 
-  const create = (resource) => {
-    // ...
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const response = await axios.get(baseUrl)
+        const allResources = response.data
+        setResources(allResources)
+      } catch (error) {
+        console.error('Error while fetching resources:', error)
+      }
+    }
+    fetchAll()
+  }, [baseUrl])
+
+  const create = async (newResource) => {
+    try {
+      const response = await axios.post(baseUrl, newResource)
+      const createdResource = response.data
+      setResources(resources.concat(createdResource))
+    } catch (error) {
+      console.error('Error while creating resource:', error)
+    }
   }
 
   const service = {
