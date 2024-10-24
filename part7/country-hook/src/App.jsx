@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const useField = (type) => {
   const [value, setValue] = useState('')
@@ -14,8 +15,26 @@ const useField = (type) => {
   }
 }
 
-const useCountry = () => {
-  /* TODO */
+const useCountry = (name) => {
+  const [country, setCountry] = useState(null)
+
+  const baseUrl = 'https://studies.cs.helsinki.fi/restcountries/api'
+
+  useEffect(() => {
+    if (name) {
+      const fetchCountry = async () => {
+        try {
+          const response = await axios.get(`${baseUrl}/name/${name}`)
+          setCountry({ data: response.data, found: true })
+        } catch (error) {
+          setCountry({ found: false })
+        }
+      }
+      fetchCountry()
+    }
+  }, [name])
+
+  return country
 }
 
 const Country = ({ country }) => {
@@ -27,16 +46,14 @@ const Country = ({ country }) => {
     return <div>Country not found</div>
   }
 
+  const { name, capital, population, flags } = country.data
+
   return (
     <div>
-      <h3>{country.data.name} </h3>
-      <div>Capital: {country.data.capital} </div>
-      <div>Population: {country.data.population}</div>
-      <img
-        src={country.data.flag}
-        height="100"
-        alt={`Flag of ${country.data.name}`}
-      />
+      <h3>{name.common} </h3>
+      <div>Capital: {capital[0]} </div>
+      <div>Population: {population}</div>
+      <img src={flags.png} height="100" alt={`Flag of ${name.common}`} />
     </div>
   )
 }
