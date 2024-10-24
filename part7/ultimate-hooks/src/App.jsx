@@ -1,52 +1,9 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-
-const useField = (type) => {
-  const [value, setValue] = useState('')
-
-  const onChange = (event) => {
-    setValue(event.target.value)
-  }
-
-  return {
-    type,
-    value,
-    onChange,
-  }
-}
-
-const useResource = (baseUrl) => {
-  const [resources, setResources] = useState([])
-
-  useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const response = await axios.get(baseUrl)
-        const allResources = response.data
-        setResources(allResources)
-      } catch (error) {
-        console.error('Error while fetching resources:', error)
-      }
-    }
-    fetchAll()
-  }, [baseUrl])
-
-  const create = async (newResource) => {
-    try {
-      const response = await axios.post(baseUrl, newResource)
-      const createdResource = response.data
-      setResources(resources.concat(createdResource))
-    } catch (error) {
-      console.error('Error while creating resource:', error)
-    }
-  }
-
-  const service = {
-    create,
-  }
-
-  return [resources, service]
-}
+import useField from './hooks/useField'
+import useResource from './hooks/useResource'
+import NoteForm from './components/note/NoteForm'
+import NotesList from './components/note/NotesList'
+import PersonForm from './components/person/PersonForm'
+import PersonsList from './components/person/PersonsList'
 
 const App = () => {
   const contentInput = useField('text')
@@ -69,25 +26,16 @@ const App = () => {
   return (
     <div>
       <h2>Notes</h2>
-      <form onSubmit={handleNoteSubmit}>
-        Content: <input {...contentInput} />
-        <button type="submit">Create</button>
-      </form>
-      {notes.map((n) => (
-        <p key={n.id}>{n.content}</p>
-      ))}
+      <NotesList notes={notes} />
+      <NoteForm content={contentInput} onSubmit={handleNoteSubmit} />
 
       <h2>Persons</h2>
-      <form onSubmit={handlePersonSubmit}>
-        Name: <input {...nameInput} /> <br />
-        Number: <input {...numberInput} />
-        <button type="submit">Create</button>
-      </form>
-      {persons.map((n) => (
-        <p key={n.id}>
-          {n.name} {n.number}
-        </p>
-      ))}
+      <PersonsList persons={persons} />
+      <PersonForm
+        name={nameInput}
+        number={number}
+        onSubmit={handlePersonSubmit}
+      />
     </div>
   )
 }
