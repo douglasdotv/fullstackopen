@@ -11,7 +11,6 @@ import { initializeUser, login, logout } from '../../store/slices/userSlice'
 import BlogForm from './BlogForm'
 import BlogList from './BlogList'
 import LoginForm from '../auth/LoginForm'
-import Notification from '../utils/Notification'
 import Toggleable from '../utils/Toggleable'
 import Button from '../common/Button'
 
@@ -92,7 +91,6 @@ const BlogPage = () => {
 
   return (
     <div>
-      <Notification />
       {user ? (
         <>
           <p>{user.name} logged in!</p>
