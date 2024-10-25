@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useMatch, useNavigate } from 'react-router-dom'
+import { useMatch, useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeUser } from '../../store/slices/authSlice'
 import {
@@ -77,7 +77,9 @@ const BlogDetail = () => {
           {blog.url}
         </a>
       </p>
-      <p>Added by {blog.user.name}</p>
+      <p>
+        Added by <Link to={`/users/${blog.user.id}`}>{blog.user.name}</Link>
+      </p>
       {isBlogByCurrentUser && <Button onClick={handleRemove}>Remove</Button>}
     </div>
   )

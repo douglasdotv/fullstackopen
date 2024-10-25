@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useMatch } from 'react-router-dom'
+import { useMatch, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeUsers } from '../../store/slices/usersSlice'
 import SectionTitle from '../common/SectionTitle'
@@ -28,7 +28,11 @@ const UserDetail = () => {
       <SectionTitle text={user.name} level={2} />
       <ul>
         {user.blogs && user.blogs.length > 0 ? (
-          user.blogs.map(blog => <li key={blog.id}>{blog.title}</li>)
+          user.blogs.map(blog => (
+            <li key={blog.id}>
+              <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+            </li>
+          ))
         ) : (
           <p>No blog posts available for this user.</p>
         )}
