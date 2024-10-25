@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const Comment = require('../models/comment')
 
 blogsRouter.get('/', async (_request, response) => {
   const blogs = await Blog.find({}).populate('user', {
@@ -84,6 +85,25 @@ blogsRouter.put('/:id', async (request, response) => {
   } else {
     response.status(404).json({ error: 'Blog post not found' })
   }
+})
+
+blogsRouter.get('/:id/comments', async (request, response) => {
+  const { id } = request.params
+  const comments = await Comment.find({ blogId: id })
+  response.json(comments)
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { id } = request.params
+  const { text } = request.body
+
+  const comment = new Comment({
+    blogId: id,
+    text,
+  })
+
+  const savedComment = await comment.save()
+  response.status(201).json(savedComment)
 })
 
 module.exports = blogsRouter
