@@ -7,7 +7,7 @@ import {
   likeBlog,
   removeBlog,
 } from '../../store/slices/blogsSlice'
-import { initializeUser, login, logout } from '../../store/slices/userSlice'
+import { initializeUser, login, logout } from '../../store/slices/authSlice'
 import BlogForm from './BlogForm'
 import BlogList from './BlogList'
 import LoginForm from '../auth/LoginForm'
@@ -16,7 +16,7 @@ import Button from '../common/Button'
 
 const BlogPage = () => {
   const dispatch = useDispatch()
-  const user = useSelector(state => state.user)
+  const user = useSelector(state => state.authenticatedUser)
 
   const blogFormRef = useRef(null)
 

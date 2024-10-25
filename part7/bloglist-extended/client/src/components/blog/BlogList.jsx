@@ -5,7 +5,7 @@ import SectionTitle from '../common/SectionTitle'
 
 const BlogList = ({ onLike, onRemove }) => {
   const blogs = useSelector(state => state.blogs)
-  const user = useSelector(state => state.user)
+  const user = useSelector(state => state.authenticatedUser)
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
