@@ -1,12 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { showNotification } from '../../store/slices/notificationSlice'
-import {
-  initializeBlogs,
-  createBlog,
-  likeBlog,
-  removeBlog,
-} from '../../store/slices/blogsSlice'
+import { initializeBlogs, createBlog } from '../../store/slices/blogsSlice'
 import { initializeUser } from '../../store/slices/authSlice'
 import useAuth from '../../hooks/useAuth'
 import BlogForm from './BlogForm'
@@ -46,35 +41,6 @@ const BlogPage = () => {
     }
   }
 
-  const handleUpdateBlog = async (id, updatedBlog) => {
-    try {
-      dispatch(likeBlog(id))
-      dispatch(showNotification(`Liked "${updatedBlog.title}"!`, 'success'))
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.error ||
-        'Server is unreachable. Please try again later.'
-      dispatch(showNotification(errorMessage, 'error'))
-    }
-  }
-
-  const handleRemoveBlog = async id => {
-    try {
-      const blogToRemove = blogs.find(blog => blog.id === id)
-      if (!blogToRemove) {
-        dispatch(showNotification(`Blog with id "${id}" not found.`, 'error'))
-        return
-      }
-      dispatch(removeBlog(id))
-      dispatch(showNotification(`Removed "${blogToRemove.title}"!`, 'success'))
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.error ||
-        'Server is unreachable. Please try again later.'
-      dispatch(showNotification(errorMessage, 'error'))
-    }
-  }
-
   return (
     <div>
       {user ? (
@@ -84,7 +50,7 @@ const BlogPage = () => {
           <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
             <BlogForm onSubmit={handleCreateBlog} />
           </Toggleable>
-          <BlogList onLike={handleUpdateBlog} onRemove={handleRemoveBlog} />
+          <BlogList />
         </>
       ) : (
         <LoginForm onLogin={handleLogin} />
