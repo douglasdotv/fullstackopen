@@ -7,7 +7,9 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test node --test",
-    "start:test": "cross-env NODE_ENV=test node index.js"
+    "start:test": "cross-env NODE_ENV=test node index.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "author": "Douglas Vieira",
   "license": "MIT",
@@ -23,7 +25,10 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "nodemon": "^3.1.7",
+    "prettier": "^3.3.3",
     "supertest": "^7.0.0"
   }
 }
