@@ -5,13 +5,12 @@ import { initializeUser } from '../../store/slices/authSlice'
 import useAuth from '../../hooks/useAuth'
 import UserList from './UserList'
 import LoginForm from '../auth/LoginForm'
-import Button from '../common/Button'
 
 const UserPage = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.authenticatedUser)
 
-  const { handleLogin, handleLogout } = useAuth()
+  const { handleLogin } = useAuth()
 
   useEffect(() => {
     dispatch(initializeUser())
@@ -23,19 +22,7 @@ const UserPage = () => {
     }
   }, [user, dispatch])
 
-  return (
-    <div>
-      {user ? (
-        <>
-          <p>{user.name} logged in!</p>
-          <Button onClick={handleLogout}>Logout</Button>
-          <UserList />
-        </>
-      ) : (
-        <LoginForm onLogin={handleLogin} />
-      )}
-    </div>
-  )
+  return <div>{user ? <UserList /> : <LoginForm onLogin={handleLogin} />}</div>
 }
 
 export default UserPage

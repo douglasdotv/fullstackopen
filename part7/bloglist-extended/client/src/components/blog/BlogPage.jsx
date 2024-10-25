@@ -8,13 +8,12 @@ import BlogForm from './BlogForm'
 import BlogList from './BlogList'
 import LoginForm from '../auth/LoginForm'
 import Toggleable from '../utils/Toggleable'
-import Button from '../common/Button'
 
 const BlogPage = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.authenticatedUser)
 
-  const { handleLogin, handleLogout } = useAuth()
+  const { handleLogin } = useAuth()
 
   const blogFormRef = useRef(null)
 
@@ -45,8 +44,6 @@ const BlogPage = () => {
     <div>
       {user ? (
         <>
-          <p>{user.name} logged in!</p>
-          <Button onClick={handleLogout}>Logout</Button>
           <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
             <BlogForm onSubmit={handleCreateBlog} />
           </Toggleable>
