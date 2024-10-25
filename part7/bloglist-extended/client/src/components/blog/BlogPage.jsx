@@ -7,7 +7,8 @@ import {
   likeBlog,
   removeBlog,
 } from '../../store/slices/blogsSlice'
-import { initializeUser, login, logout } from '../../store/slices/authSlice'
+import { initializeUser } from '../../store/slices/authSlice'
+import useAuth from '../../hooks/useAuth'
 import BlogForm from './BlogForm'
 import BlogList from './BlogList'
 import LoginForm from '../auth/LoginForm'
@@ -17,6 +18,8 @@ import Button from '../common/Button'
 const BlogPage = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.authenticatedUser)
+
+  const { handleLogin, handleLogout } = useAuth()
 
   const blogFormRef = useRef(null)
 
@@ -29,23 +32,6 @@ const BlogPage = () => {
       dispatch(initializeBlogs())
     }
   }, [user, dispatch])
-
-  const handleLogin = async credentials => {
-    try {
-      dispatch(login(credentials))
-      dispatch(showNotification('Logged in successfully!', 'success'))
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.error ||
-        'Server is unreachable. Please try again later.'
-      dispatch(showNotification(errorMessage, 'error'))
-    }
-  }
-
-  const handleLogout = () => {
-    dispatch(logout())
-    dispatch(showNotification('Logged out successfully!', 'success'))
-  }
 
   const handleCreateBlog = async newBlog => {
     try {
