@@ -42,7 +42,7 @@ const BlogPage = () => {
     fetchBlogs()
   }, [user])
 
-  const handleLogin = async (credentials) => {
+  const handleLogin = async credentials => {
     try {
       const response = await loginService.login(credentials)
       const user = {
@@ -70,7 +70,7 @@ const BlogPage = () => {
     showNotification('Logged out successfully!', 'success')
   }
 
-  const handleCreateBlog = async (newBlog) => {
+  const handleCreateBlog = async newBlog => {
     try {
       const createdBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(createdBlog))
@@ -92,7 +92,7 @@ const BlogPage = () => {
       })
 
       setBlogs(
-        blogs.map((blog) =>
+        blogs.map(blog =>
           blog.id === id ? { ...updatedBlogResponse, user: blog.user } : blog
         )
       )
@@ -106,9 +106,9 @@ const BlogPage = () => {
     }
   }
 
-  const handleRemoveBlog = async (id) => {
+  const handleRemoveBlog = async id => {
     try {
-      const blogToRemove = blogs.find((blog) => blog.id === id)
+      const blogToRemove = blogs.find(blog => blog.id === id)
 
       if (!blogToRemove) {
         showNotification(`Blog with id "${id}" not found.`, 'error')
@@ -117,7 +117,7 @@ const BlogPage = () => {
 
       await blogService.remove(id)
 
-      setBlogs(blogs.filter((blog) => blog.id !== id))
+      setBlogs(blogs.filter(blog => blog.id !== id))
 
       showNotification(`Removed "${blogToRemove.title}"!`, 'success')
     } catch (error) {

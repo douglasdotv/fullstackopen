@@ -5,7 +5,7 @@ import SectionTitle from '../common/SectionTitle'
 const BlogList = ({ blogs, user, onLike, onRemove }) => (
   <div>
     <SectionTitle text="Blogs" level={2} />
-    {blogs.map((blog) => (
+    {blogs.map(blog => (
       <Blog
         key={blog.id}
         blog={blog}

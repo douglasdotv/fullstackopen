@@ -22,7 +22,7 @@ const initialBlogs = [
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
-  return blogs.map((blog) => blog.toJSON())
+  return blogs.map(blog => blog.toJSON())
 }
 
 const nonExistingId = async () => {
@@ -52,7 +52,7 @@ const initialUsers = [
 
 const usersInDb = async () => {
   const users = await User.find({})
-  return users.map((user) => user.toJSON())
+  return users.map(user => user.toJSON())
 }
 
 const createUserAndGetAuthDetails = async () => {

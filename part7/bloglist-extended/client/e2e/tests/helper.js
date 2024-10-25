@@ -35,7 +35,7 @@ const removeBlog = async (page, title) => {
     hasText: title,
   })
   await blogPostContainer.getByRole('button', { name: 'View' }).click()
-  page.on('dialog', async (dialog) => {
+  page.on('dialog', async dialog => {
     await dialog.accept()
   })
   await blogPostContainer.getByRole('button', { name: 'Remove' }).click()

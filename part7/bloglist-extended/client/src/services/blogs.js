@@ -4,7 +4,7 @@ const baseUrl = '/api/blogs'
 let token = null
 let config = null
 
-const setToken = (newToken) => {
+const setToken = newToken => {
   token = `Bearer ${newToken}`
 }
 
@@ -13,7 +13,7 @@ const getAll = async () => {
   return response.data
 }
 
-const create = async (newBlog) => {
+const create = async newBlog => {
   config = {
     headers: { Authorization: token },
   }
@@ -29,7 +29,7 @@ const update = async (id, updatedBlog) => {
   return response.data
 }
 
-const remove = async (id) => {
+const remove = async id => {
   config = {
     headers: { Authorization: token },
   }

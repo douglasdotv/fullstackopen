@@ -22,12 +22,12 @@ describe('Tests for /api/blogs', () => {
     user = userAndToken.user
 
     const blogObjects = helper.initialBlogs.map(
-      (blog) => new Blog({ ...blog, user: user._id })
+      blog => new Blog({ ...blog, user: user._id })
     )
-    const promiseArray = blogObjects.map((blog) => blog.save())
+    const promiseArray = blogObjects.map(blog => blog.save())
     await Promise.all(promiseArray)
 
-    user.blogs = blogObjects.map((blog) => blog._id)
+    user.blogs = blogObjects.map(blog => blog._id)
     await user.save()
   })
 
@@ -49,7 +49,7 @@ describe('Tests for /api/blogs', () => {
       const response = await api.get('/api/blogs')
       const blogsAtStart = await helper.blogsInDb()
       const blogToFind = blogsAtStart[0]
-      const blog = response.body.find((blog) => blog.id === blogToFind.id)
+      const blog = response.body.find(blog => blog.id === blogToFind.id)
       assert.notStrictEqual(blog, undefined)
     })
 
@@ -182,7 +182,7 @@ describe('Tests for /api/blogs', () => {
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 
-      const titles = blogsAtEnd.map((b) => b.title)
+      const titles = blogsAtEnd.map(b => b.title)
       assert.ok(!titles.includes(blogToDelete.title))
     })
 
@@ -229,7 +229,7 @@ describe('Tests for /api/blogs', () => {
       assert.strictEqual(response.body.likes, updatedBlogData.likes)
 
       const blogsAtEnd = await helper.blogsInDb()
-      const updatedBlog = blogsAtEnd.find((b) => b.id === blogToUpdate.id)
+      const updatedBlog = blogsAtEnd.find(b => b.id === blogToUpdate.id)
 
       assert.strictEqual(updatedBlog.title, updatedBlogData.title)
       assert.strictEqual(updatedBlog.author, updatedBlogData.author)

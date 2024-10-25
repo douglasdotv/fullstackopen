@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 const Form = ({ onSubmit, children }) => {
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault()
     onSubmit()
   }

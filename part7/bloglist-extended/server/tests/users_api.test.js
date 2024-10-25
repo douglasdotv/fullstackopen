@@ -11,8 +11,8 @@ const api = supertest(app)
 describe('Tests for /api/users', () => {
   beforeEach(async () => {
     await User.deleteMany({})
-    const userObjects = helper.initialUsers.map((user) => new User(user))
-    const promiseArray = userObjects.map((user) => user.save())
+    const userObjects = helper.initialUsers.map(user => new User(user))
+    const promiseArray = userObjects.map(user => user.save())
     await Promise.all(promiseArray)
   })
 
@@ -31,7 +31,7 @@ describe('Tests for /api/users', () => {
 
     const usersAtEnd = await helper.usersInDb()
     assert.strictEqual(usersAtEnd.length, helper.initialUsers.length + 1)
-    const usernames = usersAtEnd.map((u) => u.username)
+    const usernames = usersAtEnd.map(u => u.username)
     assert.ok(usernames.includes(newUser.username))
   })
 
