@@ -9,8 +9,7 @@ import {
 } from '../../store/slices/blogsSlice'
 import { showNotification } from '../../store/slices/notificationSlice'
 import CommentsSection from '../comment/CommentsSection'
-import Button from '../common/Button'
-import SectionTitle from '../common/SectionTitle'
+import { Box, Typography, Button } from '@mui/material'
 
 const BlogDetail = () => {
   const match = useMatch('/blogs/:id')
@@ -34,7 +33,7 @@ const BlogDetail = () => {
   }, [dispatch, blog, currentUser])
 
   if (!blog) {
-    return <p>Loading...</p>
+    return <Typography>Loading...</Typography>
   }
 
   const handleLike = async () => {
@@ -66,24 +65,35 @@ const BlogDetail = () => {
   const isBlogByCurrentUser = currentUser.id === blogUserId
 
   return (
-    <div>
-      <SectionTitle text={blog.title} />
-      <p>Author: {blog.author}</p>
-      <p>
-        Total likes: {blog.likes} <Button onClick={handleLike}>Like</Button>
-      </p>
-      <p>
+    <Box sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        {blog.title}
+      </Typography>
+      <Typography variant="body1" color="textSecondary">
+        Author: {blog.author}
+      </Typography>
+      <Typography variant="body1">
+        Total likes: {blog.likes}{' '}
+        <Button variant="contained" color="primary" onClick={handleLike}>
+          Like
+        </Button>
+      </Typography>
+      <Typography variant="body1">
         Link:{' '}
         <a href={blog.url} target="_blank" rel="noopener noreferrer">
           {blog.url}
         </a>
-      </p>
-      <p>
+      </Typography>
+      <Typography variant="body1" color="textSecondary">
         Added by <Link to={`/users/${blog.user.id}`}>{blog.user.name}</Link>
-      </p>
-      {isBlogByCurrentUser && <Button onClick={handleRemove}>Remove</Button>}
+      </Typography>
+      {isBlogByCurrentUser && (
+        <Button variant="outlined" color="secondary" onClick={handleRemove}>
+          Remove
+        </Button>
+      )}
       <CommentsSection blogId={blog.id} />
-    </div>
+    </Box>
   )
 }
 

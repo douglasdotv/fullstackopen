@@ -1,27 +1,37 @@
 import { useSelector } from 'react-redux'
 import User from './User'
-import SectionTitle from '../common/SectionTitle'
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  Typography,
+} from '@mui/material'
 
 const UserList = () => {
   const users = useSelector(state => state.users)
 
   return (
-    <div>
-      <SectionTitle text="Users" level={2} />
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Blogs Created</th>
-          </tr>
-        </thead>
-        <tbody>
+    <Paper sx={{ mt: 4 }}>
+      <Typography variant="h4" sx={{ p: 2 }}>
+        Users
+      </Typography>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Blogs Created</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {users.map(user => (
             <User key={user.id} user={user} />
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </Paper>
   )
 }
 

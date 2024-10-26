@@ -5,7 +5,7 @@ import {
   addComment,
 } from '../../store/slices/commentsSlice'
 import { showNotification } from '../../store/slices/notificationSlice'
-import SectionTitle from '../common/SectionTitle'
+import { Box, Typography } from '@mui/material'
 import CommentForm from './CommentForm'
 import CommentList from './CommentList'
 
@@ -25,11 +25,11 @@ const CommentsSection = ({ blogId }) => {
   }
 
   return (
-    <div>
-      <SectionTitle text="Comments" level={3} />
+    <Box sx={{ mt: 4 }}>
+      <Typography variant="h6">Comments</Typography>
       <CommentForm onSubmit={handleCommentSubmit} />
       <CommentList comments={comments} />
-    </div>
+    </Box>
   )
 }
 

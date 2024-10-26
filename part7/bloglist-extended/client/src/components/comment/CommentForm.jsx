@@ -1,8 +1,6 @@
-import PropTypes from 'prop-types'
 import { useState } from 'react'
-import Button from '../common/Button'
-import Form from '../common/Form'
-import FormInput from '../common/FormInput'
+import PropTypes from 'prop-types'
+import { TextField, Button, Box } from '@mui/material'
 
 const CommentForm = ({ onSubmit }) => {
   const [commentText, setCommentText] = useState('')
@@ -11,22 +9,26 @@ const CommentForm = ({ onSubmit }) => {
     setCommentText(e.target.value)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = e => {
+    e.preventDefault()
     onSubmit(commentText)
     setCommentText('')
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <FormInput
-        type="text"
-        label="Comment"
-        name="comment"
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+      <TextField
+        label="Add a comment"
+        variant="outlined"
+        fullWidth
+        margin="normal"
         value={commentText}
         onChange={handleInputChange}
       />
-      <Button type="submit">Add Comment</Button>
-    </Form>
+      <Button type="submit" variant="contained" color="primary" sx={{ mt: 1 }}>
+        Add Comment
+      </Button>
+    </Box>
   )
 }
 

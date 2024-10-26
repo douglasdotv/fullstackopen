@@ -1,14 +1,22 @@
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import { Box, Typography } from '@mui/material'
 
 const Blog = ({ blog }) => {
   return (
-    <div className="blog-post-container">
-      <div className="blog-post-title">
-        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-      </div>
-      <div className="blog-post-author">by {blog.author}</div>
-    </div>
+    <Box sx={{ padding: 2, borderBottom: '1px solid #e0e0e0' }}>
+      <Typography
+        variant="h6"
+        component={Link}
+        to={`/blogs/${blog.id}`}
+        sx={{ textDecoration: 'none', color: 'primary.main' }}
+      >
+        {blog.title}
+      </Typography>
+      <Typography variant="body2" color="textSecondary">
+        by {blog.author}
+      </Typography>
+    </Box>
   )
 }
 

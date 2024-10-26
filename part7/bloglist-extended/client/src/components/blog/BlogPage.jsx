@@ -4,6 +4,7 @@ import { showNotification } from '../../store/slices/notificationSlice'
 import { initializeBlogs, createBlog } from '../../store/slices/blogsSlice'
 import { initializeUser } from '../../store/slices/authSlice'
 import useAuth from '../../hooks/useAuth'
+import { Container, Box } from '@mui/material'
 import BlogForm from './BlogForm'
 import BlogList from './BlogList'
 import LoginForm from '../auth/LoginForm'
@@ -12,9 +13,7 @@ import Toggleable from '../utils/Toggleable'
 const BlogPage = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.authenticatedUser)
-
   const { handleLogin } = useAuth()
-
   const blogFormRef = useRef(null)
 
   useEffect(() => {
@@ -41,18 +40,18 @@ const BlogPage = () => {
   }
 
   return (
-    <div>
+    <Container>
       {user ? (
-        <>
+        <Box sx={{ mt: 4 }}>
           <Toggleable buttonLabel="New blog post" ref={blogFormRef}>
             <BlogForm onSubmit={handleCreateBlog} />
           </Toggleable>
           <BlogList />
-        </>
+        </Box>
       ) : (
         <LoginForm onLogin={handleLogin} />
       )}
-    </div>
+    </Container>
   )
 }
 

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useMatch, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeUsers } from '../../store/slices/usersSlice'
-import SectionTitle from '../common/SectionTitle'
+import { Box, Typography, List, ListItem } from '@mui/material'
 
 const UserDetail = () => {
   const match = useMatch('/users/:id')
@@ -20,24 +20,26 @@ const UserDetail = () => {
   }, [dispatch, user])
 
   if (!user) {
-    return <p>Loading user details...</p>
+    return <Typography>Loading user details...</Typography>
   }
 
   return (
-    <div>
-      <SectionTitle text={user.name} level={2} />
-      <ul>
+    <Box sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        {user.name}
+      </Typography>
+      <List>
         {user.blogs && user.blogs.length > 0 ? (
           user.blogs.map(blog => (
-            <li key={blog.id}>
+            <ListItem key={blog.id}>
               <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-            </li>
+            </ListItem>
           ))
         ) : (
           <p>No blog posts available for this user.</p>
         )}
-      </ul>
-    </div>
+      </List>
+    </Box>
   )
 }
 

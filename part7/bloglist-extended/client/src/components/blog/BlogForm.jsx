@@ -1,16 +1,14 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import Form from '../common/Form'
-import FormInput from '../common/FormInput'
-import Button from '../common/Button'
-import SectionTitle from '../common/SectionTitle'
+import { TextField, Button, Box, Typography } from '@mui/material'
 
 const BlogForm = ({ onSubmit }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleSubmit = () => {
+  const handleSubmit = e => {
+    e.preventDefault()
     onSubmit({ title, author, url })
     setTitle('')
     setAuthor('')
@@ -18,30 +16,38 @@ const BlogForm = ({ onSubmit }) => {
   }
 
   return (
-    <div>
-      <SectionTitle text="Create a new blog post" level={2} />
-      <Form onSubmit={handleSubmit}>
-        <FormInput
-          type="text"
-          label="Title"
-          value={title}
-          onChange={({ target }) => setTitle(target.value)}
-        />
-        <FormInput
-          type="text"
-          label="Author"
-          value={author}
-          onChange={({ target }) => setAuthor(target.value)}
-        />
-        <FormInput
-          type="text"
-          label="URL"
-          value={url}
-          onChange={({ target }) => setUrl(target.value)}
-        />
-        <Button type="submit">Create</Button>
-      </Form>
-    </div>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, maxWidth: 500 }}>
+      <Typography variant="h6" gutterBottom>
+        Create a new blog post
+      </Typography>
+      <TextField
+        label="Title"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={title}
+        onChange={({ target }) => setTitle(target.value)}
+      />
+      <TextField
+        label="Author"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={author}
+        onChange={({ target }) => setAuthor(target.value)}
+      />
+      <TextField
+        label="URL"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={url}
+        onChange={({ target }) => setUrl(target.value)}
+      />
+      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+        Create
+      </Button>
+    </Box>
   )
 }
 

@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types'
-import Comment from './Comment'
+import { Box, Typography } from '@mui/material'
 
 const CommentList = ({ comments }) => {
   return (
-    <ul>
+    <Box sx={{ mt: 2 }}>
       {comments.map(comment => (
-        <Comment key={comment.id} text={comment.text} />
+        <Typography key={comment.id} variant="body1" sx={{ mb: 1 }}>
+          "{comment.text}"
+        </Typography>
       ))}
-    </ul>
+    </Box>
   )
 }
 
