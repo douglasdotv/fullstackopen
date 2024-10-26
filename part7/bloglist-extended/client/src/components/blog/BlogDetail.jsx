@@ -8,6 +8,7 @@ import {
   removeBlog,
 } from '../../store/slices/blogsSlice'
 import { showNotification } from '../../store/slices/notificationSlice'
+import CommentsSection from '../comment/CommentsSection'
 import Button from '../common/Button'
 import SectionTitle from '../common/SectionTitle'
 
@@ -81,6 +82,7 @@ const BlogDetail = () => {
         Added by <Link to={`/users/${blog.user.id}`}>{blog.user.name}</Link>
       </p>
       {isBlogByCurrentUser && <Button onClick={handleRemove}>Remove</Button>}
+      <CommentsSection blogId={blog.id} />
     </div>
   )
 }

@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 import commentService from '../../services/comments'
 
+const initialState = {}
+
 const commentsSlice = createSlice({
   name: 'comments',
-  initialState: {},
+  initialState,
   reducers: {
     commentsLoaded(state, action) {
       const { blogId, comments } = action.payload
