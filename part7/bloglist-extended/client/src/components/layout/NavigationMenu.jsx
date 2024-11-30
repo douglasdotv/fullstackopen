@@ -1,6 +1,6 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { AppBar, Toolbar, ButtonGroup, Button } from '@mui/material'
+import { AppBar, Toolbar, ButtonGroup, Button, Box } from '@mui/material'
 import useAuth from '../../hooks/useAuth'
 
 const NavigationMenu = () => {
@@ -10,7 +10,7 @@ const NavigationMenu = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <div style={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1 }}>
           <ButtonGroup color="inherit" variant="text">
             <Button component={Link} to="/">
               Home
@@ -22,7 +22,7 @@ const NavigationMenu = () => {
               Users
             </Button>
           </ButtonGroup>
-        </div>
+        </Box>
         {user && (
           <div>
             {user.name} logged in!{' '}

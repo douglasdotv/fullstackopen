@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeUsers } from '../../store/slices/usersSlice'
 import { initializeUser } from '../../store/slices/authSlice'
 import useAuth from '../../hooks/useAuth'
+import { Container } from '@mui/material'
 import UserList from './UserList'
 import LoginForm from '../auth/LoginForm'
 
@@ -22,7 +23,11 @@ const UserPage = () => {
     }
   }, [user, dispatch])
 
-  return <div>{user ? <UserList /> : <LoginForm onLogin={handleLogin} />}</div>
+  return (
+    <Container>
+      {user ? <UserList /> : <LoginForm onLogin={handleLogin} />}
+    </Container>
+  )
 }
 
 export default UserPage
