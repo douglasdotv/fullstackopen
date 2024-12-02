@@ -3,9 +3,9 @@ const { login, createBlog, likeBlog, removeBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:3003/api/testing/reset')
+    await request.post('/api/testing/reset')
 
-    await request.post('http://localhost:3003/api/users', {
+    await request.post('/api/users', {
       data: {
         name: 'Douglas Vieira',
         username: 'douglas',
@@ -13,7 +13,7 @@ describe('Blog app', () => {
       },
     })
 
-    await request.post('http://localhost:3003/api/users', {
+    await request.post('/api/users', {
       data: {
         name: 'Another User',
         username: 'another',
@@ -21,7 +21,7 @@ describe('Blog app', () => {
       },
     })
 
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
 
   test('Should display login form by default', async ({ page }) => {
